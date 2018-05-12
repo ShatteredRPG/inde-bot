@@ -1,0 +1,28 @@
+{
+  "name": "inde-bot",
+  "version": "1.0.0",
+  "description": "INDE Bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShatteredRPG/inde-bot.git"
+  },
+  "keywords": [
+    "INDE",
+    "Shattered",
+    "RPG",
+    "dice"
+  ],
+  "author": "INDE",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/ShatteredRPG/inde-bot/issues"
+  },
+  "homepage": "https://github.com/ShatteredRPG/inde-bot#readme",
+  "dependencies": {
+    "discord.js": "^11.3.2"
+  }
+}
