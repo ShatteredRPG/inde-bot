@@ -1,4 +1,9 @@
 {
     "prefix": "!",
-    "token": "NDQ0Njk4MjY2MjYxNjUxNDU2.DdftIw.z4WhocPR_AdRABn4cVjge-xnOVY"
+    "token": "NDQ0Njk4MjY2MjYxNjUxNDU2.DdftIw.z4WhocPR_AdRABn4cVjge-xnOVY",
+    "host": "",
+    "port": "",
+    "dbname": "",
+    "dbuser": "",
+    "dbpass": ""
 }
