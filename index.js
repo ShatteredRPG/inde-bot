@@ -57,7 +57,6 @@ function prefixHandler(msg, cmd, args) {
         }
 
         if (modSign !== '') {
-            console.log(newArg);
             newArg = rawArg.split(modSign);
             rating = newArg[0];
             mod = newArg[1] * modMult;
@@ -86,7 +85,7 @@ function prefixHandler(msg, cmd, args) {
         var result = d10r + d8r + d6r + d4r + mod;
 
         //msg.channel.send(`${msg.author} rolled Rating **${rating}** (${d10c}d10+${d8c}d8+${d6c}d6+${d4c}d4${modSign}${mod}) = **${result}**`)
-        msg.channel.send(concatRoll(msg.author, rating, d10c, d8c, d6c, d4c, modSign, mod, result));
+        msg.channel.send(concatRoll(msg.author, rating, d10c, d10r, d8c, d8r, d6c, d6r, d4c, d4r, modSign, mod, result));
 
     }
     else if (cmd === `roll` || cmd === `r`) {
@@ -95,38 +94,54 @@ function prefixHandler(msg, cmd, args) {
     }
 }
 
-function concatRoll(author, rating, d10c, d8c, d6c, d4c, modSign, mod, result)
+function concatRoll(author, rating, d10c, d10r, d8c, d8r, d6c, d6r, d4c, d4r, modSign, mod, result)
 {
-    var str = `${author} rolled Rating **${rating}** (`;
+    var str = `${author} rolled MDS Rating **${rating}** (`;
+    var resultStr = '';
     if (d10c > 0) {
         str += `${d10c}d10+`;
+        resultStr += `${d10r}+`;
     }
     if (d8c > 0) {
         str += `${d8c}d8+`;
+        resultStr += `${d8r}+`;
     }
     if (d6c > 0) {
-        str += `${d8c}d6+`;
+        str += `${d6c}d6+`;
+        resultStr += `${d6r}+`;
     }
     if (d4c > 0) {
-        str += `${d8c}d4`;
+        str += `${d4c}d4`;
+        resultStr += `${d4r}+`;
     }
     if (str.endsWith('+')) {
         str = str.slice(0, -1);
     }
-    if (mod > 0) {
-        str += modSign + mod;
+    if (resultStr.endsWith('+')) {
+        resultStr = resultStr.slice(0, -1);
     }
-    str += `) = **${result}**`;
+    if (mod !== 0) {
+        if (mod > 0) {
+            str += modSign + mod;
+            resultStr += modSign + mod;
+        }
+        else {
+            str += mod;
+            resultStr += mod;
+        }
+        
+    }
+    str += `) = *[${resultStr}]* = **${result}**`;
     return str;
 }
 
-function dieRoll(min, max) {  
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+function dieRoll(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 function rollMultiple(count, min, max) {
     var result = 0;
-    for (var i = 0; i <= count; i++) {
+    for (var i = 0; i < count; i++) {
         result += dieRoll(min, max);
     }
     return result;
