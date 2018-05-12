@@ -82,37 +82,49 @@ function prefixHandler(msg, cmd, args) {
         var d6r = rollMultiple(d6c, 1, 6);
         var d4r = rollMultiple(d4c, 1, 4);
 
-        var result = d10r + d8r + d6r + d4r + mod;
-
         //msg.channel.send(`${msg.author} rolled Rating **${rating}** (${d10c}d10+${d8c}d8+${d6c}d6+${d4c}d4${modSign}${mod}) = **${result}**`)
-        msg.channel.send(concatRoll(msg.author, rating, d10c, d10r, d8c, d8r, d6c, d6r, d4c, d4r, modSign, mod, result));
+        msg.channel.send(concatRoll(msg.author, rating, d10r, d8r, d6r, d4r, modSign, mod));
 
     }
     else if (cmd === `roll` || cmd === `r`) {
         // do basic roll logic
-        msg.channel.send("This is where I would tell you what you rolled via dice if my programmers would ever get around to it.");
+        msg.channel.send('This is where I would tell you what you rolled via dice if my programmers would ever get around to it.');
     }
 }
 
-function concatRoll(author, rating, d10c, d10r, d8c, d8r, d6c, d6r, d4c, d4r, modSign, mod, result)
+// Concats the MDS roll
+function concatRoll(author, rating, d10r, d8r, d6r, d4r, modSign, mod)
 {
     var str = `${author} rolled MDS Rating **${rating}** (`;
     var resultStr = '';
-    if (d10c > 0) {
-        str += `${d10c}d10+`;
-        resultStr += `${d10r}+`;
+    var result = 0;
+    if (d10r['count'] > 0) {
+        str += `${d10r['count']}d10+`;
+        resultStr += `(${d10r['rolls'].join('+')})+`;
+        for (var i = 0; i < d10r['rolls'].length; i++) {
+            result += d10r['rolls'][i];
+        }
     }
-    if (d8c > 0) {
-        str += `${d8c}d8+`;
-        resultStr += `${d8r}+`;
+    if (d8r['count'] > 0) {
+        str += `${d8r['count']}d8+`;
+        resultStr += `(${d8r['rolls'].join('+')})+`;
+        for (var i = 0; i < d8r['rolls'].length; i++) {
+            result += d8r['rolls'][i];
+        }
     }
-    if (d6c > 0) {
-        str += `${d6c}d6+`;
-        resultStr += `${d6r}+`;
+    if (d6r['count'] > 0) {
+        str += `${d6r['count']}d6+`;
+        resultStr += `(${d6r['rolls'].join('+')})+`;
+        for (var i = 0; i < d6r['rolls'].length; i++) {
+            result += d6r['rolls'][i];
+        }
     }
-    if (d4c > 0) {
-        str += `${d4c}d4`;
-        resultStr += `${d4r}+`;
+    if (d4r['count'] > 0) {
+        str += `${d4r['count']}d4`;
+        resultStr += `(${d4r['rolls'].join('+')})+`;
+        for (var i = 0; i < d4r['rolls'].length; i++) {
+            result += d4r['rolls'][i];
+        }
     }
     if (str.endsWith('+')) {
         str = str.slice(0, -1);
@@ -127,9 +139,9 @@ function concatRoll(author, rating, d10c, d10r, d8c, d8r, d6c, d6r, d4c, d4r, mo
         }
         else {
             str += mod;
-            resultStr += mod;
+            resultStr += mod;        
         }
-        
+        result += mod;
     }
     str += `) = *[${resultStr}]* = **${result}**`;
     return str;
@@ -141,8 +153,17 @@ function dieRoll(min, max) {
 
 function rollMultiple(count, min, max) {
     var result = 0;
+    var arr = [];
     for (var i = 0; i < count; i++) {
-        result += dieRoll(min, max);
+        var roll = dieRoll(min, max);
+        result += roll;
+        arr.push(roll);
     }
-    return result;
+    var resultObj = {
+        'count': count,
+        'dieCode': max,
+        'result': result,
+        'rolls': arr
+    }
+    return resultObj;
 }
