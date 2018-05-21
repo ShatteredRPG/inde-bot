@@ -26,6 +26,7 @@
   "homepage": "https://github.com/ShatteredRPG/inde-bot#readme",
   "dependencies": {
     "discord.js": "^11.3.2",
+    "jsonfile": "^4.0.0",
     "sequelize": "^4.37.7"
   }
 }

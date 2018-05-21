@@ -49,8 +49,7 @@ function cmdHandler(msg, cmd, args) {
         dice.mds(msg, args);
     }
     else if (cmd === `roll` || cmd === `r`) {
-        // do basic roll logic
-        msg.channel.send('This is where I would tell you what you rolled via dice if my programmers would ever get around to it.');
+        dice.dice(msg, args);
     }
     else if (cmd === ``) {
 

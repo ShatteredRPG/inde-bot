@@ -44,6 +44,9 @@ module.exports = {
 
             //msg.channel.send(`${msg.author} rolled Rating **${rating}** (${d10c}d10+${d8c}d8+${d6c}d6+${d4c}d4${modSign}${mod}) = **${result}**`)
             msg.channel.send(concatRoll(msg.author, rating, d10r, d8r, d6r, d4r, modSign, mod));
+    },
+    dice: function(msg, args) {
+        msg.channel.send("Not Yet Implemented");
     }
   };
 
