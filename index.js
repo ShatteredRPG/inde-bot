@@ -4,6 +4,8 @@ const Discord = require('discord.js');
 const Sequelize = require('sequelize');
 // require the dice code
 const dice = require('./dice.js');
+// require the chat code
+const chat = require('./chat.js');
 //creates a discord client
 const client = new Discord.Client();
 // sets config vars
@@ -45,13 +47,16 @@ client.on('message', msg => {
 client.login(token);
 
 function cmdHandler(msg, cmd, args) {
-    if (cmd === `mds`) {
+    if (cmd.toLowerCase() === `mds`) {
         dice.mds(msg, args);
     }
-    else if (cmd === `roll` || cmd === `r`) {
+    else if (cmd.toLowerCase() === `roll` || cmd.toLowerCase() === `r`) {
         dice.dice(msg, args);
     }
-    else if (cmd === ``) {
-
+    else if (cmd.toLowerCase() === `news`) {
+        chat.news(msg, args);
+    }
+    else if (cmd.toLowerCase() === `setnews`) {
+        chat.setnews(msg, args);
     }
 }
