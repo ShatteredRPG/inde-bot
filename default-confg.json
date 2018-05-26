@@ -2,13 +2,13 @@
     "prefix": "!",
     "token": "",
     "dbhost": "This is a default config.json so no db info is exposed",
-    "dbport": "",
+    "dbport": "Rename to config.json",
     "dbname": "",
     "dbuser": "",
     "dbpass": "",
     
-    "tblNews": "t_inde_news",
-    "tblGreet": "t_inde_greet",
-    "tblIntro": "t_inde_intro",
-    "tblOutro": "t_inde_outro"
+    "tblNews": "t_news",
+    "tblGreet": "t_greet",
+    "tblIntro": "t_intro",
+    "tblOutro": "t_outro"
 }
