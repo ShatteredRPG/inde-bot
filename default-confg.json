@@ -1,0 +1,14 @@
+{
+    "prefix": "!",
+    "token": "",
+    "dbhost": "This is a default config.json so no db info is exposed",
+    "dbport": "",
+    "dbname": "",
+    "dbuser": "",
+    "dbpass": "",
+    
+    "tblNews": "t_inde_news",
+    "tblGreet": "t_inde_greet",
+    "tblIntro": "t_inde_intro",
+    "tblOutro": "t_inde_outro"
+}

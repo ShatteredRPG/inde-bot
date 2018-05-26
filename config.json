@@ -1,9 +1,14 @@
 {
     "prefix": "!",
     "token": "NDQ0Njk4MjY2MjYxNjUxNDU2.DdftIw.z4WhocPR_AdRABn4cVjge-xnOVY",
-    "host": "",
-    "port": "",
+    "dbhost": "",
+    "dbport": "",
     "dbname": "",
     "dbuser": "",
-    "dbpass": ""
+    "dbpass": "",
+    
+    "tblNews": "t_news",
+    "tblGreet": "t_greet",
+    "tblIntro": "t_intro",
+    "tblOutro": "t_outro"
 }
