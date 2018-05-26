@@ -4,21 +4,25 @@ const util = require('./util.js');
 const { tblNews, tblGreet, tblIntro, tblOutro } = require('./config.json');
 
 module.exports = {
+    // allows members to ask for a news article
     news: function(msg, args) {
         //read a json file somewhere to 
         const author = msg.author;
 
+        //gets all the news articles
         var greetQ = db.selectAll(tblGreet);
         var introQ = db.selectALl(tblIntro);
         var newsQ = db.selectAll(tblNews);
         var outroQ = db.selectAll(tblOutro);
 
+        //grabs a random entry
         var randGreet = getRandNews(greetQ); //`Hey`;
         var randIntro = getRandNews(introQ); //`I've got some news for ya.`;
         var randNews = getRandNews(newsQ); //`This is random news around Feneryss`;
         var randOutro = getRandNews(outroQ); //`Anything else? A drink perhaps?`;
         msg.channel.send(`${randGreet}${author}, ${randIntro}${randNews} ${randOutro}`);
     },
+    // adds, removes, and lists news artiles by name
     setnews: function(msg, args) {
         const author = msg.author;
         const getSet = args[0];
@@ -26,7 +30,7 @@ module.exports = {
         var newsDesc = args.shift().shift().join(' ');
         if(msg.member.roles.find('name', 'Staff')) {
             if (getSet.toLowerCase() === 'add') {
-                if(db.query(`INSERT INTO ${tblNews} (itemName, itemDesc) VALUES (${args[1]}, ${args[2]})`)[0]) {
+                if(db.query(`INSERT INTO ${tblNews} (itemName, itemDesc) VALUES ('${args[1]}', '${args[2]}')`)[0]) {
                     msg.channel.send(`Thanks ${author}, I've added ${args[1]} to my news list.`);
                 }
                 else {
@@ -34,7 +38,7 @@ module.exports = {
                 }
             }
             else if (getSet.toLowerCase() === 'rem') {
-                if(db.query(`DELETE FROM ${tblNews} WHERE itemName = ${args[1]}`)[0]) {
+                if(db.query(`DELETE FROM ${tblNews} WHERE itemName = '${args[1]}'`)[0]) {
                     msg.channel.send(`Alrighty ${author}, I won't tell members about **${args[1]}** anymore.`);
                 }
                 else {
@@ -42,7 +46,7 @@ module.exports = {
                 }
             }
             else if (getSet.toLowerCase() === 'list') {
-                var dbResult = db.query(`DELETE FROM ${tblNews} WHERE itemName = ${args[1]}`);
+                var dbResult = db.query(`DELETE FROM ${tblNews} WHERE itemName = '${args[1]}'`);
                 if(dbResult[0]) {
                     var response = `This is what I have for news articles, ${author}: `;
                     for (var i = 0; i < dbResult[1].length; i++) {
