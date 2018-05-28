@@ -27,7 +27,8 @@
   "dependencies": {
     "discord.js": "^11.3.2",
     "jsonfile": "^4.0.0",
+    "mysql": "^2.15.0",
     "mysql2": "^1.5.3",
-    "sequelize": "^4.37.7"
+    "sync-mysql": "^3.0.1"
   }
 }

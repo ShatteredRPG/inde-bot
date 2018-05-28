@@ -1,7 +1,5 @@
 // require the discord.js module
 const Discord = require('discord.js');
-// require the sequelize module
-const Sequelize = require('sequelize');
 // require the dice code
 const dice = require('./dice.js');
 // require the chat code
@@ -9,7 +7,7 @@ const chat = require('./chat.js');
 //creates a discord client
 const client = new Discord.Client();
 // sets config vars
-const { prefix, token, host, port, dbname, dbuser, dbpass } = require('./config.json');
+const { prefix, token } = require('./config.json');
 
 
 //const Cmds = require('./cmd.js');

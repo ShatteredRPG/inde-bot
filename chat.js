@@ -10,17 +10,11 @@ module.exports = {
         const author = msg.author;
 
         //gets all the news articles
-        var greetQ = db.selectAll(tblGreet);
-        var introQ = db.selectALl(tblIntro);
-        var newsQ = db.selectAll(tblNews);
-        var outroQ = db.selectAll(tblOutro);
-
-        //grabs a random entry
-        var randGreet = getRandNews(greetQ); //`Hey`;
-        var randIntro = getRandNews(introQ); //`I've got some news for ya.`;
-        var randNews = getRandNews(newsQ); //`This is random news around Feneryss`;
-        var randOutro = getRandNews(outroQ); //`Anything else? A drink perhaps?`;
-        msg.channel.send(`${randGreet}${author}, ${randIntro}${randNews} ${randOutro}`);
+        var greet = db.randResult(tblGreet, 'greet');
+        var intro = db.randResult(tblIntro, 'intro');
+        var news = db.randResult(tblNews, 'newsDesc');
+        var outro = db.randResult(tblOutro, 'outro');
+        msg.channel.send(`${greet} ${author}, ${intro} ${news} ${outro}`);
     },
     // adds, removes, and lists news artiles by name
     setnews: function(msg, args) {
