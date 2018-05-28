@@ -8,13 +8,36 @@ const { dbhost, dbport, dbname, dbuser, dbpass } = require('./config.json');
 
 module.exports = {
     query: function(q) {
-        var success = false;
-        sql
-            .query(q)
-            .then(function(myTableRows) {
-                success = true;
-                return { success, rows };
-            });
+        var connection  = new mysql({
+            host     : dbhost,
+            user     : dbuser,
+            password : dbpass,
+            port     : dbport,
+            database : dbname
+          });
+
+          const result = connection.query(q);
+
+          connection.dispose();
+
+          return result;
+
+    },
+    selectAll: function(tbl) {
+        var connection  = new mysql({
+            host     : dbhost,
+            user     : dbuser,
+            password : dbpass,
+            port     : dbport,
+            database : dbname
+          });
+
+          const result = connection.query(`SELECT * FROM ${tbl};`);
+
+          connection.dispose();
+
+          return result;
+
     },
     randResult: function(tbl, sel) {
 
@@ -28,6 +51,10 @@ module.exports = {
           
           const result = connection.query(`SELECT * FROM ${tbl};`);
           var r = util.rand(0, result.length - 1);
+
+
+          connection.dispose();
+
           return result[r][sel];
     }
 };

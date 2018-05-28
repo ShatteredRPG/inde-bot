@@ -6,6 +6,8 @@
     "dbname": "",
     "dbuser": "",
     "dbpass": "",
+
+    "allowedGroups": [ "" ],
     
     "tblNews": "t_news",
     "tblGreet": "t_greet",

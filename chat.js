@@ -16,15 +16,17 @@ module.exports = {
         var outro = db.randResult(tblOutro, 'outro');
         msg.channel.send(`${greet} ${author}, ${intro} ${news} ${outro}`);
     },
-    // adds, removes, and lists news artiles by name
-    setnews: function(msg, args) {
-        const author = msg.author;
-        const getSet = args[0];
-        const newsItem = args[1];
-        var newsDesc = args.shift().shift().join(' ');
-        if(msg.member.roles.find('name', 'Staff')) {
+    setphrase: function(msg, args) {
+
+        if(util.isAllowed(msg.member)) {
+            // !setphrase add greet blah blah blah blah
+            const author = msg.author;
+            const getSet = args[0];
+            const tbl = `t_${args[1]}`;
+
             if (getSet.toLowerCase() === 'add') {
-                if(db.query(`INSERT INTO ${tblNews} (itemName, itemDesc) VALUES ('${args[1]}', '${args[2]}')`)[0]) {
+                const phrase = args.slice(2).join(' ');
+                if(db.query(`INSERT INTO ${tbl} (${args[1]}) VALUES ('${phrase}')`)) {
                     msg.channel.send(`Thanks ${author}, I've added ${args[1]} to my news list.`);
                 }
                 else {
@@ -32,21 +34,68 @@ module.exports = {
                 }
             }
             else if (getSet.toLowerCase() === 'rem') {
-                if(db.query(`DELETE FROM ${tblNews} WHERE itemName = '${args[1]}'`)[0]) {
+                if(db.query(`DELETE FROM ${tbl} WHERE ID = '${args[2]}'`)) {
+                    msg.channel.send(`Alrighty ${author}, I won't use that phrase in my **${args[1]}** anymore.`);
+                }
+                else {
+                    msg.channel.send(`Sorry, ${author}, my eraser must be broken. I can't remove **${args[2]}** to my **${args[1]}** phrases right now.`);
+                }
+            }
+            else if (getSet.toLowerCase() === 'list') {
+                const itemCol = 'ID';
+                const descCol = args[1];
+                var dbResult = db.selectAll(tbl);
+                if(dbResult) {
+                    var response = `This is what I have for ${args[1]}, ${author}: `;
+                    for (var i = 0; i < dbResult.length; i++) {
+                        response += `\r\n-- **${dbResult[i][itemCol]}** : ${dbResult[i][descCol]}`;
+                    }
+                    msg.channel.send(response);
+                }
+                else {
+                    msg.channel.send(`Sorry, ${author}, I can find my notepad right now, come back a bit later, ok?`);
+                }
+            }
+        else {
+            msg.channel.send(`NO can do ${author}, you're not a trusted wordsmith here on Feneryss.`);
+        }
+      }
+    },
+    // adds, removes, and lists news artiles by name
+    setnews: function(msg, args) {
+        //if someone is in the trusted group, allow them to change the news
+        if(util.isAllowed(msg.member)) {
+            const author = msg.author;
+            const getSet = args[0];
+            const newsItem = args[1];
+            //add news to the db
+            if (getSet.toLowerCase() === 'add') {
+                var newsDesc = args.slice(2).join(' ');
+                if(db.query(`INSERT INTO ${tblNews} (newsItem, newsDesc) VALUES ('${args[1]}', '${newsDesc}')`)) {
+                    msg.channel.send(`Thanks ${author}, I've added ${args[1]} to my news list.`);
+                }
+                else {
+                    msg.channel.send(`Sorry, ${author}, my pencil must be broken. I can't add **${args[1]}** to my news right now.`);
+                }
+            }
+            //remove news from the db
+            else if (getSet.toLowerCase() === 'rem') {
+                if(db.query(`DELETE FROM ${tblNews} WHERE newsItem = '${args[1]}'`)) {
                     msg.channel.send(`Alrighty ${author}, I won't tell members about **${args[1]}** anymore.`);
                 }
                 else {
                     msg.channel.send(`Sorry, ${author}, my eraser must be broken. I can't remove **${args[1]}** to my news right now.`);
                 }
             }
-            else if (getSet.toLowerCase() === 'list') {
-                var dbResult = db.query(`DELETE FROM ${tblNews} WHERE itemName = '${args[1]}'`);
-                if(dbResult[0]) {
+            if (getSet.toLowerCase() === 'list') {
+                const itemCol = 'newsItem';
+                const descCol = 'newsDesc';
+                var dbResult = db.selectAll(tblNews);
+                if(dbResult) {
                     var response = `This is what I have for news articles, ${author}: `;
-                    for (var i = 0; i < dbResult[1].length; i++) {
-                        response += `**${dbResult[1][i]}**, `;
+                    for (var i = 0; i < dbResult.length; i++) {
+                        response += `\r\n-- **${dbResult[i][itemCol]}** : ${dbResult[i][descCol]}`;
                     }
-                    response = response.substring(0, response.length - 2);
                     msg.channel.send(response);
                 }
                 else {
