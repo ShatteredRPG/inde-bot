@@ -6,6 +6,7 @@
     "dbname": "",
     "dbuser": "",
     "dbpass": "",
+    "dbconlmit": "10",
 
     "allowedGroups": [ "" ],
     
