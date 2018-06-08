@@ -1,7 +1,7 @@
 const db = require('./db.js');
 const util = require('./util.js');
 
-const { tblNews } = require('./config.json');
+// const { tblNews } = require('./config.json');
 
 module.exports = {
     // allows members to ask for a news article
@@ -27,27 +27,34 @@ module.exports = {
 
             if (getSet.toLowerCase() === 'add') {
                 const phrase = args.slice(2).join(' ');
+                db.phraseAdd(msg, tbl, args[1], phrase);
+                /*
                 if(db.query(`INSERT INTO ${tbl} (${args[1]}) VALUES ('${phrase}')`)) {
                     msg.channel.send(`Thanks ${author}, I've added ${args[1]} to my news list.`);
                 }
                 else {
                     msg.channel.send(`Sorry, ${author}, my pencil must be broken. I can't add **${args[1]}** to my news right now.`);
-                }
+                }*/
             }
             else if (getSet.toLowerCase() === 'rem') {
+                db.phraseRemove(msg, tbl, args[1], args[2]);
+                /*
                 if(db.query(`DELETE FROM ${tbl} WHERE ID = '${args[2]}'`)) {
                     msg.channel.send(`Alrighty ${author}, I won't use that phrase in my **${args[1]}** anymore.`);
                 }
                 else {
                     msg.channel.send(`Sorry, ${author}, my eraser must be broken. I can't remove **${args[2]}** to my **${args[1]}** phrases right now.`);
-                }
+                }*/
             }
             else if (getSet.toLowerCase() === 'list') {
-                const itemCol = 'ID';
-                const descCol = args[1];
+                // const itemCol = 'ID';
+                // const descCol = args[1];
+
+                db.phraseList(msg, tbl, args[1]);
+                /*
                 const dbResult = db.selectAll(tbl);
                 if(dbResult) {
-                    let response = `This is what I have for ${args[1]}, ${author}: `;
+                    let response = `This is what I have for ${descCol}, ${author}: `;
                     for (let i = 0; i < dbResult.length; i++) {
                         response += `\r\n-- **${dbResult[i][itemCol]}** : ${dbResult[i][descCol]}`;
                     }
@@ -55,7 +62,7 @@ module.exports = {
                 }
                 else {
                     msg.channel.send(`Sorry, ${author}, I can find my notepad right now, come back a bit later, ok?`);
-                }
+                }*/
             }
         else {
             msg.channel.send(`NO can do ${author}, you're not a trusted wordsmith here on Feneryss.`);
@@ -72,25 +79,34 @@ module.exports = {
             // add news to the db
             if (getSet.toLowerCase() === 'add') {
                 const newsDesc = args.slice(2).join(' ');
+                db.newsAdd(msg, newsItem, newsDesc);
+                /*
                 if(db.query(`INSERT INTO ${tblNews} (newsItem, newsDesc) VALUES ('${newsItem}', '${newsDesc}')`)) {
                     msg.channel.send(`Thanks ${author}, I've added ${args[1]} to my news list.`);
                 }
                 else {
                     msg.channel.send(`Sorry, ${author}, my pencil must be broken. I can't add **${newsItem}** to my news right now.`);
                 }
+                */
             }
             // remove news from the db
             else if (getSet.toLowerCase() === 'rem') {
+                db.newsRemove(msg, newsItem);
+                /*
                 if(db.query(`DELETE FROM ${tblNews} WHERE newsItem = '${newsItem}'`)) {
                     msg.channel.send(`Alrighty ${author}, I won't tell members about **${newsItem}** anymore.`);
                 }
                 else {
                     msg.channel.send(`Sorry, ${author}, my eraser must be broken. I can't remove **${newsItem}** to my news right now.`);
                 }
+                */
             }
             if (getSet.toLowerCase() === 'list') {
+                db.newsList(msg);
+                /*
                 const itemCol = 'newsItem';
                 const descCol = 'newsDesc';
+                // -->
                 const dbResult = db.selectAll(tblNews);
                 if(dbResult) {
                     let response = `This is what I have for news articles, ${author}: `;
@@ -101,7 +117,8 @@ module.exports = {
                 }
                 else {
                     msg.channel.send(`Sorry, ${author}, I can find my notepad right now, come back a bit later, ok?`);
-                }
+                }*/
+                // <--
             }
         }
         else {
