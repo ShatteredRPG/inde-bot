@@ -34,6 +34,7 @@ function errResponse(msg, text) {
 }
 
 module.exports = {
+    // Returns a random news item
     getNews: function(msg) {
         pool.getConnection(function(err, con) {
             let greet, intro, news, outro;
@@ -53,6 +54,7 @@ module.exports = {
             msg.channel.send(`${greet} ${msg.author}, ${intro} ${news} ${outro}`);
         });
     },
+    // Allows adding phrases without phpMyAdmin
     phraseAdd: function(msg, tbl, item, phrase) {
         const errText = `Sorry, ${msg.author}, my pencil must be broken. I can't add **${item}** to my news right now.`;
         pool.getConnection(function(err, con) {
@@ -72,6 +74,7 @@ module.exports = {
             con.release();
         });
     },
+    // Allows removing phrases without phpMyAdmin
     phraseRemove: function(msg, tbl, phraseType, phrase) {
         const errText = `Sorry, ${msg.author}, my eraser must be broken. I can't remove **${phrase}** from my **${phraseType}** phrases right now.`;
         pool.getConnection(function(err, con) {
@@ -91,6 +94,7 @@ module.exports = {
             con.release();
         });
     },
+    // Allows viewing the phrase list without phpMyAdmin
     phraseList: function(msg, tbl, descCol) {
         const errText = `Sorry, ${msg.author}, I can find my notepad right now, come back a bit later, ok?`;
         const itemCol = 'ID';
@@ -115,6 +119,7 @@ module.exports = {
             con.release();
         });
     },
+    // Allows adding news without phpMyAdmin
     newsAdd: function(msg, newsItem, newsDesc) {
         const errText = `Sorry, ${msg.author}, my pencil must be broken. I can't add **${newsItem}** to my news right now.`;
         pool.getConnection(function(err, con) {
@@ -134,6 +139,7 @@ module.exports = {
             con.release();
         });
     },
+    // Allows removing news without phpMyAdmin
     newsRemove: function(msg, newsItem) {
         const errText = `Sorry, ${msg.author}, my eraser must be broken. I can't remove **${newsItem}** to my news right now.`;
         pool.getConnection(function(err, con) {
@@ -153,6 +159,7 @@ module.exports = {
             con.release();
         });
     },
+    // Allows viewing the news list without phpMyAdmin
     newsList: function(msg) {
         const errText = `Sorry, ${msg.author}, I can find my notepad right now, come back a bit later, ok?`;
         const itemCol = 'newsItem';
@@ -178,6 +185,7 @@ module.exports = {
             con.release();
         });
     },
+    // returns a random drink
     getDrink: function(msg) {
         pool.getConnection(function(err, con) {
             let greet, drinkItem, drinkDesc;
@@ -193,6 +201,7 @@ module.exports = {
             msg.channel.send(`${greet} ${msg.author}, I'll pour you a ${drinkItem}. It's made with ${drinkDesc}.`);
         });
     },
+    // Allows adding drinks without phpMyAdmin
     drinkAdd: function(msg, drinkItem, drinkDesc) {
         const errText = `Sorry, ${msg.author}, I misplayced my drink list so I can't add **${drinkItem}** to it right now.`;
         pool.getConnection(function(err, con) {
@@ -212,6 +221,7 @@ module.exports = {
             con.release();
         });
     },
+    // Allows removing drinks without phpMyAdmin
     drinkRemove: function(msg, args) {
         const errText = `Yeah....no dice. My eraser went missing, ${msg.author}. Ask me later and I'll remove **${drinkItem}**.`;
         pool.getConnection(function(err, con) {
@@ -231,6 +241,7 @@ module.exports = {
             con.release();
         });
     },
+    // Allows viewing the drink list without phpMyAdmin
     drinkList: function(msg, args) {
         const errText = `Sorry, ${msg.author}, I can find my notepad right now, come back a bit later, ok?`;
         const itemCol = 'drinkItem';
@@ -256,6 +267,7 @@ module.exports = {
             con.release();
         });
     },
+    // returns a random food item
     getFood(msg) {
         pool.getConnection(function(err, con) {
             let greet, drinkItem, drinkDesc;
@@ -271,6 +283,7 @@ module.exports = {
             msg.channel.send(`${greet} ${msg.author}, I'll whip you up a ${drinkItem}. It's made with ${drinkDesc}.`);
         });
     },
+    // Allows adding food without phpMyAdmin
     foodAdd: function(msg, foodItem, foodDesc) {
         const errText = `Hmm...my food menu has been misplaced. Can you try again later, ${msg.author}? , I'll add **${foodItem}** to it then.`;
         pool.getConnection(function(err, con) {
@@ -290,6 +303,7 @@ module.exports = {
             con.release();
         });
     },
+    // Allows removing food without phpMyAdmin
     foodRemove: function(msg, foodItem) {
         const errText = `Yeah, I can't remove ${foodItem} right now. Try again later, ${msg.author}.`;
         pool.getConnection(function(err, con) {
@@ -309,6 +323,7 @@ module.exports = {
             con.release();
         });
     },
+    // Allows viewing the food list without phpMyAdmin
     foodList: function(msg, args) {
         const errText = `Sorry, ${msg.author}, I can find my notepad right now, come back a bit later, ok?`;
         const itemCol = 'foodItem';
@@ -338,6 +353,7 @@ module.exports = {
     setRoles: function(author, email) {
         const errText = `Sorry, ${msg.author}, I can find my notepad right now, ask one of the INDE Staff, please.`;
         pool.getConnection(function(err, con) {
+            let inUse = false;
             let roleList = [];
             if (err.length > 0) {
                 author.send()
@@ -347,19 +363,31 @@ module.exports = {
                 let tbl = tblsRoles[i];
                 con.query(`SELECT * FROM ${tbl} WHERE email=${email}`), function(err, results) {
                     if (results.length > 0) {
-                        let role = result['roleName'];
-                        author.setRoles(role);
-                        roleList.push(role);
+                        if (results['inUse'] === author) {
+                            let role = result['roleName'];
+                            author.setRoles(role);
+                            roleList.push(role);
+                        }
+                        else
+                        {
+                            inUse = true;
+                            break;
+                        }
                     }
-                }
-                if (roleList.length > 0) {
-                    author.send(`Hey ${author}, thanks for your support! You've been added to the following role(s): ${roleList.join(', ')}`);
-                }
-                else {
-                    author.send(`I'm sorry, ${author} you are not currently in our records. If you feel this is an error, please speak with the INDE staff.`);
                 }
             }
             con.release();
+
+            
+            if (inUse) {
+                author.send(`Hate to break it to you, ${author}, but your email is already in use by someone else.`)
+            }
+            else if (roleList.length > 0) {
+                author.send(`Hey ${author}, thanks for your support! You've been added to the following role(s): ${roleList.join(', ')}`);
+            }
+            else {
+                author.send(`I'm sorry, ${author} you are not currently in our records. If you feel this is an error, please speak with the INDE staff.`);
+            }
         }
     },
 };

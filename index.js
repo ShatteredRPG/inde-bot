@@ -20,6 +20,10 @@ client.on('ready', () => {
     console.log('Ready!');
 });
 
+client.on('guildMemberAdd', (guild, member) => {
+    chat.greet(guild, member, prefix);
+});
+
 // message logic
 client.on('message', msg => {
     if (msg.author.bot) return;
@@ -43,6 +47,7 @@ client.on('message', msg => {
 // login to Discord with your app's token
 client.login(token);
 
+// handles the commands sent to the Discord bot
 function cmdHandler(msg, cmd, args) {
     if (cmd.toLowerCase() === 'mds') {
         dice.mds(msg, args);
@@ -55,5 +60,23 @@ function cmdHandler(msg, cmd, args) {
     }
     else if (cmd.toLowerCase() === 'setnews') {
         chat.setnews(msg, args);
+    }
+    else if (cmd.toLowerCase() === 'drink') {
+        chat.drink(msg);
+    }
+    else if (cmd.toLowerCase() === 'setdrink') {
+        chat.setdrink(msg, args);
+    }
+    else if (cmd.toLowerCase() === 'food') {
+        chat.food(msg);
+    }
+    else if (cmd.toLowerCase() === 'setfood') {
+        chat.setfood(msg);
+    }
+    else if (cmd.toLowerCase() === 'role') {
+        chat.addRole(msg, args);
+    }
+    else if (cmd.toLowerCase() === 'help') {
+        chat.help(msg);
     }
 }

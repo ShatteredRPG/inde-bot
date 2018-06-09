@@ -1,7 +1,7 @@
 const db = require('./db.js');
 const util = require('./util.js');
 
-// const { tblNews } = require('./config.json');
+const { welcomeChannel } = require('./config.json');
 
 module.exports = {
     // allows members to ask for a news article
@@ -114,4 +114,14 @@ module.exports = {
         db.setRoles(author, email);
         // not sure what to do here
     },
+    greet: function (guild, member, prefix) {
+        guild.channels.get(welcomeChannel).send(
+            `Hey; ${member}! Welcome to the official **INDE** Discord Server, home of **Shattered**, the Grimdark RPG. 
+            If you are a Kickstarter or Backerkit backer, please PM me the following (*{EMAIL]* is the email you used): 
+                *${prefix}role [EMAIL]*. If you're interested in purchasing our work, please check out our shop: 
+                http://shop.neverdarkenough.com/ . Enjoy your stay!`);
+    },
+    help: function (msg) {
+        msg.channel.send("NOT YET IMPLEMENTED");
+    }
 };
