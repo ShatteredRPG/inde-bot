@@ -1,17 +1,20 @@
 {
     "prefix": "!",
-    "token": "",
-    "dbhost": "This is a default config.json so no db info is exposed",
-    "dbport": "Rename to config.json",
-    "dbname": "",
-    "dbuser": "",
-    "dbpass": "",
+    "token": "yourTokenHere",
+    "dbhost": "host",
+    "dbport": "port",
+    "dbname": "bot",
+    "dbuser": "botUser",
+    "dbpass": "botPass",
     "dbconlmit": "10",
 
-    "allowedGroups": [ "" ],
+    "allowedGroups": [ "Admin" ],
     
     "tblNews": "t_news",
     "tblGreet": "t_greet",
     "tblIntro": "t_intro",
-    "tblOutro": "t_outro"
+    "tblOutro": "t_outro",
+    "tblDrinks": "t_drinks",
+    "tblFood": "t_food",
+    "tblsRoles": [ "t_roleTable" ]
 }

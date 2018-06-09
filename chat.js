@@ -7,15 +7,6 @@ module.exports = {
     // allows members to ask for a news article
     news: function(msg) {
         db.getNews(msg);
-        /*
-        const author = msg.author;
-
-        // gets all the news articles
-        const greet = db.randResult(tblGreet, 'greet');
-        const intro = db.randResult(tblIntro, 'intro');
-        const news = db.randResult(tblNews, 'newsDesc');
-        const outro = db.randResult(tblOutro, 'outro');
-        msg.channel.send(`${greet} ${author}, ${intro} ${news} ${outro}`);*/
     },
     setphrase: function(msg, args) {
 
@@ -28,41 +19,13 @@ module.exports = {
             if (getSet.toLowerCase() === 'add') {
                 const phrase = args.slice(2).join(' ');
                 db.phraseAdd(msg, tbl, args[1], phrase);
-                /*
-                if(db.query(`INSERT INTO ${tbl} (${args[1]}) VALUES ('${phrase}')`)) {
-                    msg.channel.send(`Thanks ${author}, I've added ${args[1]} to my news list.`);
-                }
-                else {
-                    msg.channel.send(`Sorry, ${author}, my pencil must be broken. I can't add **${args[1]}** to my news right now.`);
-                }*/
             }
             else if (getSet.toLowerCase() === 'rem') {
                 db.phraseRemove(msg, tbl, args[1], args[2]);
-                /*
-                if(db.query(`DELETE FROM ${tbl} WHERE ID = '${args[2]}'`)) {
-                    msg.channel.send(`Alrighty ${author}, I won't use that phrase in my **${args[1]}** anymore.`);
-                }
-                else {
-                    msg.channel.send(`Sorry, ${author}, my eraser must be broken. I can't remove **${args[2]}** to my **${args[1]}** phrases right now.`);
-                }*/
             }
             else if (getSet.toLowerCase() === 'list') {
-                // const itemCol = 'ID';
-                // const descCol = args[1];
 
                 db.phraseList(msg, tbl, args[1]);
-                /*
-                const dbResult = db.selectAll(tbl);
-                if(dbResult) {
-                    let response = `This is what I have for ${descCol}, ${author}: `;
-                    for (let i = 0; i < dbResult.length; i++) {
-                        response += `\r\n-- **${dbResult[i][itemCol]}** : ${dbResult[i][descCol]}`;
-                    }
-                    msg.channel.send(response);
-                }
-                else {
-                    msg.channel.send(`Sorry, ${author}, I can find my notepad right now, come back a bit later, ok?`);
-                }*/
             }
         else {
             msg.channel.send(`NO can do ${author}, you're not a trusted wordsmith here on Feneryss.`);
@@ -80,49 +43,75 @@ module.exports = {
             if (getSet.toLowerCase() === 'add') {
                 const newsDesc = args.slice(2).join(' ');
                 db.newsAdd(msg, newsItem, newsDesc);
-                /*
-                if(db.query(`INSERT INTO ${tblNews} (newsItem, newsDesc) VALUES ('${newsItem}', '${newsDesc}')`)) {
-                    msg.channel.send(`Thanks ${author}, I've added ${args[1]} to my news list.`);
-                }
-                else {
-                    msg.channel.send(`Sorry, ${author}, my pencil must be broken. I can't add **${newsItem}** to my news right now.`);
-                }
-                */
             }
             // remove news from the db
             else if (getSet.toLowerCase() === 'rem') {
                 db.newsRemove(msg, newsItem);
-                /*
-                if(db.query(`DELETE FROM ${tblNews} WHERE newsItem = '${newsItem}'`)) {
-                    msg.channel.send(`Alrighty ${author}, I won't tell members about **${newsItem}** anymore.`);
-                }
-                else {
-                    msg.channel.send(`Sorry, ${author}, my eraser must be broken. I can't remove **${newsItem}** to my news right now.`);
-                }
-                */
             }
             if (getSet.toLowerCase() === 'list') {
                 db.newsList(msg);
-                /*
-                const itemCol = 'newsItem';
-                const descCol = 'newsDesc';
-                // -->
-                const dbResult = db.selectAll(tblNews);
-                if(dbResult) {
-                    let response = `This is what I have for news articles, ${author}: `;
-                    for (let i = 0; i < dbResult.length; i++) {
-                        response += `\r\n-- **${dbResult[i][itemCol]}** : ${dbResult[i][descCol]}`;
-                    }
-                    msg.channel.send(response);
-                }
-                else {
-                    msg.channel.send(`Sorry, ${author}, I can find my notepad right now, come back a bit later, ok?`);
-                }*/
-                // <--
             }
         }
         else {
-            msg.channel.send(`NO can do ${author}, you're not a trusted source of news here on Feneryss.`);
+            msg.channel.send(`Sorry ${author}, you're not a trusted source of news here on Feneryss.`);
         }
+    },
+    drink: function (msg) {
+        db.getDrink(msg);
+    },
+    setdrink: function (msg, args) {
+        const author = msg.author;
+        // if someone is in the trusted group, allow them to change the news
+        if(util.isAllowed(msg.member)) {
+            const getSet = args[0];
+            const drinkItem = args[1];
+            // add news to the db
+            if (getSet.toLowerCase() === 'add') {
+                const drinkDesc = args.slice(2).join(' ');
+                db.drinkAdd(msg, drinkItem, drinkDesc);
+            }
+            // remove news from the db
+            else if (getSet.toLowerCase() === 'rem') {
+                db.drinkRemove(msg, drinkItem);
+            }
+            if (getSet.toLowerCase() === 'list') {
+                db.drinkList(msg);
+            }
+        }
+        else {
+            msg.channel.send(`Mmm no, that doesn't sound like a good drink recipe, ${author}. Find someone who has some better ideas.`);
+        }
+    },
+    food: function (msg) {
+        db.getFood(msg);
+    },
+    setfood: function (msg, args) {
+        const author = msg.author;
+        // if someone is in the trusted group, allow them to change the news
+        if(util.isAllowed(msg.member)) {
+            const getSet = args[0];
+            const foodItem = args[1];
+            // add news to the db
+            if (getSet.toLowerCase() === 'add') {
+                const foodDesc = args.slice(2).join(' ');
+                db.foodAdd(msg, foodItem, foodDesc);
+            }
+            // remove news from the db
+            else if (getSet.toLowerCase() === 'rem') {
+                db.foodRemove(msg, foodItem);
+            }
+            if (getSet.toLowerCase() === 'list') {
+                db.foodList(msg);
+            }
+        }
+        else {
+            msg.channel.send(`Ehhh no thanks. I'll find someone else for good meals, ${author}.`);
+        }
+    },
+    addRole: function (msg, args) {
+        let author = msg.author;
+        let email = args[0];
+        db.setRoles(author, email);
+        // not sure what to do here
     },
 };

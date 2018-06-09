@@ -6,6 +6,7 @@ const util = require('./util.js');
 
 const { dbhost, dbport, dbname, dbuser, dbpass,
     dbconlimit, tblNews, tblGreet, tblIntro, tblOutro,
+    tblDrinks,tblFood, tblsRoles
     } = require('./config.json');
 
 const mysqljs = require('mysqljs');
@@ -23,9 +24,9 @@ function selectQueryStr(tbl) {
     return `SELECT * FROM ${tbl};`;
 }
 
-function getRandResult(results, sel) {
+function getRandResult(results) {
     const r = util.rand(0, results.length - 1);
-    return results[r][sel];
+    return results[r];
 }
 
 function errResponse(msg, text) {
@@ -37,16 +38,16 @@ module.exports = {
         pool.getConnection(function(err, con) {
             let greet, intro, news, outro;
             con.query(selectQueryStr(tblGreet), function(err, results) {
-                greet = getRandResult(results, 'greet');
+                greet = getRandResult(results)['greet'];
             });
             con.query(selectQueryStr(tblIntro), function(err, results) {
-                intro = getRandResult(results, 'intro');
+                intro = getRandResult(results)['intro'];
             });
             con.query(selectQueryStr(tblNews), function(err, results) {
-                news = getRandResult(results, 'newsDesc');
+                news = getRandResult(results)['newsDesc'];
             });
             con.query(selectQueryStr(tblOutro), function(err, results) {
-                outro = getRandResult(results, 'outro');
+                outro = getRandResult(results)['outro'];
             });
             con.release();
             msg.channel.send(`${greet} ${msg.author}, ${intro} ${news} ${outro}`);
@@ -177,55 +178,188 @@ module.exports = {
             con.release();
         });
     },
-/*
-    query: function(q) {
-        const connection = new mysql({
-            host     : dbhost,
-            user     : dbuser,
-            password : dbpass,
-            port     : dbport,
-            database : dbname,
-          });
-
-          const result = connection.query(q);
-
-          connection.dispose();
-
-          return result;
-
+    getDrink: function(msg) {
+        pool.getConnection(function(err, con) {
+            let greet, drinkItem, drinkDesc;
+            con.query(selectQueryStr(tblGreet), function(err, results) {
+                greet = getRandResult(results, 'greet');
+            });
+            con.query(selectQueryStr(tblIntro), function(err, results) {
+                let drink = getRandResult(results);
+                drinkItem = drink['drinkItem'];
+                drinkDesc = drink["drinkDesc"];
+            });
+            con.release();
+            msg.channel.send(`${greet} ${msg.author}, I'll pour you a ${drinkItem}. It's made with ${drinkDesc}.`);
+        });
     },
-    selectAll: function(tbl) {
-        const connection = new mysql({
-            host     : dbhost,
-            user     : dbuser,
-            password : dbpass,
-            port     : dbport,
-            database : dbname,
-          });
-
-          const result = connection.query(`SELECT * FROM ${tbl};`);
-
-          connection.dispose();
-
-          return result;
-
+    drinkAdd: function(msg, drinkItem, drinkDesc) {
+        const errText = `Sorry, ${msg.author}, I misplayced my drink list so I can't add **${drinkItem}** to it right now.`;
+        pool.getConnection(function(err, con) {
+            if (err.length > 0) {
+                errResponse(errText);
+            }
+            else {
+                con.query(`INSERT INTO ${tblDrinks} (drinkItem, drinkDesc) VALUES ('${drinkItem}', '${drinkDesc}')`, function(err, results) {
+                    if (err.length > 0 || results === false) {
+                        errResponse(errText);
+                    }
+                    else {
+                        msg.channel.send(`Nice! I've added ${drinkItem} to my drink list, ${msg.author}.`);
+                    }
+                });
+            }
+            con.release();
+        });
     },
-    randResult: function(tbl, sel) {
-
-        const connection = new mysql({
-            host     : dbhost,
-            user     : dbuser,
-            password : dbpass,
-            port     : dbport,
-            database : dbname,
-          });
-
-          const result = connection.query(`SELECT * FROM ${tbl};`);
-          const r = util.rand(0, result.length - 1);
-
-
-          connection.dispose();
-
-          return result[r][sel];
-    },*/
+    drinkRemove: function(msg, args) {
+        const errText = `Yeah....no dice. My eraser went missing, ${msg.author}. Ask me later and I'll remove **${drinkItem}**.`;
+        pool.getConnection(function(err, con) {
+            if (err.length > 0) {
+                errResponse(errText);
+            }
+            else {
+                con.query(`DELETE FROM ${tblDrinks} WHERE drinkItem = '${drinkItem}'`, function(err, results) {
+                    if (err.length > 0 || results === false) {
+                        errResponse(errText);
+                    }
+                    else {
+                        msg.channel.send(`Alrighty ${msg.author}, I won't tell members about **${drinkItem}** anymore.`);
+                    }
+                });
+            }
+            con.release();
+        });
+    },
+    drinkList: function(msg, args) {
+        const errText = `Sorry, ${msg.author}, I can find my notepad right now, come back a bit later, ok?`;
+        const itemCol = 'drinkItem';
+        const descCol = 'drinkDesc';
+        let response = `This is what I have for drinks, ${msg.author}: `;
+        pool.getConnection(function(err, con) {
+            if (err.length > 0) {
+                errResponse(errText);
+            }
+            else {
+                con.query(selectQueryStr(tblDrinks), function(err, results) {
+                    if (err.length > 0 || results === false) {
+                        errResponse(errText);
+                    }
+                    else {
+                        for (let i = 0; i < results.length; i++) {
+                            response += `\r\n-- **${results[i][itemCol]}** : ${results[i][descCol]}`;
+                        }
+                        msg.channel.send(response);
+                    }
+                });
+            }
+            con.release();
+        });
+    },
+    getFood(msg) {
+        pool.getConnection(function(err, con) {
+            let greet, drinkItem, drinkDesc;
+            con.query(selectQueryStr(tblGreet), function(err, results) {
+                greet = getRandResult(results, 'greet');
+            });
+            con.query(selectQueryStr(tblIntro), function(err, results) {
+                let food = getRandResult(results);
+                foodItem = drink['drinkItem'];
+                foodDesc = drink["drinkDesc"];
+            });
+            con.release();
+            msg.channel.send(`${greet} ${msg.author}, I'll whip you up a ${drinkItem}. It's made with ${drinkDesc}.`);
+        });
+    },
+    foodAdd: function(msg, foodItem, foodDesc) {
+        const errText = `Hmm...my food menu has been misplaced. Can you try again later, ${msg.author}? , I'll add **${foodItem}** to it then.`;
+        pool.getConnection(function(err, con) {
+            if (err.length > 0) {
+                errResponse(errText);
+            }
+            else {
+                con.query(`INSERT INTO ${tblFood} (foodItem, foodDesc) VALUES ('${foodItem}', '${foodDesc}')`, function(err, results) {
+                    if (err.length > 0 || results === false) {
+                        errResponse(errText);
+                    }
+                    else {
+                        msg.channel.send(`Sounds tasty! I'll add ${foodItem} to my menu right now, ${msg.author}.`);
+                    }
+                });
+            }
+            con.release();
+        });
+    },
+    foodRemove: function(msg, foodItem) {
+        const errText = `Yeah, I can't remove ${foodItem} right now. Try again later, ${msg.author}.`;
+        pool.getConnection(function(err, con) {
+            if (err.length > 0) {
+                errResponse(errText);
+            }
+            else {
+                con.query(`DELETE FROM ${tblFood} WHERE foodItem = '${foodItem}'`, function(err, results) {
+                    if (err.length > 0 || results === false) {
+                        errResponse(errText);
+                    }
+                    else {
+                        msg.channel.send(`Well, if you insist, ${msg.author}, I'll remove **${foodItem}** from my menu.`);
+                    }
+                });
+            }
+            con.release();
+        });
+    },
+    foodList: function(msg, args) {
+        const errText = `Sorry, ${msg.author}, I can find my notepad right now, come back a bit later, ok?`;
+        const itemCol = 'foodItem';
+        const descCol = 'foodDesc';
+        let response = `This is what I have for food recipes, ${msg.author}: `;
+        pool.getConnection(function(err, con) {
+            if (err.length > 0) {
+                errResponse(errText);
+            }
+            else {
+                con.query(selectQueryStr(tblFood), function(err, results) {
+                    if (err.length > 0 || results === false) {
+                        errResponse(errText);
+                    }
+                    else {
+                        for (let i = 0; i < results.length; i++) {
+                            response += `\r\n-- **${results[i][itemCol]}** : ${results[i][descCol]}`;
+                        }
+                        msg.channel.send(response);
+                    }
+                });
+            }
+            con.release();
+        });
+    },
+    // Sets the roles based on the user's provided email; marks the email as in use
+    setRoles: function(author, email) {
+        const errText = `Sorry, ${msg.author}, I can find my notepad right now, ask one of the INDE Staff, please.`;
+        pool.getConnection(function(err, con) {
+            let roleList = [];
+            if (err.length > 0) {
+                author.send()
+                errResponse(errText);
+            }
+            for (let i = 0; i < tblsRoles; i++) {
+                let tbl = tblsRoles[i];
+                con.query(`SELECT * FROM ${tbl} WHERE email=${email}`), function(err, results) {
+                    if (results.length > 0) {
+                        let role = result['roleName'];
+                        author.setRoles(role);
+                        roleList.push(role);
+                    }
+                }
+                if (roleList.length > 0) {
+                    author.send(`Hey ${author}, thanks for your support! You've been added to the following role(s): ${roleList.join(', ')}`);
+                }
+                else {
+                    author.send(`I'm sorry, ${author} you are not currently in our records. If you feel this is an error, please speak with the INDE staff.`);
+                }
+            }
+            con.release();
+        }
+    },
 };
