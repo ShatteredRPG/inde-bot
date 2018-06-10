@@ -33,4 +33,17 @@ CREATE TABLE bot.t_shatteredCore {
     email VARCHAR(255),
     roleName VARCHAR(255),
     PRIMARY KEY (ID)
+);
+
+CREATE TABLE bot.t_food (
+    ID INT NOT NULL AUTO_INCREMENT,
+    foodItem TEXT NOT NULL,
+    foodDesc TEXT NOT NULL,
+    PRIMARY KEY (ID)
+);
+CREATE TABLE bot.t_drink (
+    ID INT NOT NULL AUTO_INCREMENT,
+    drinkItem TEXT NOT NULL,
+    drinkDesc TEXT NOT NULL,
+    PRIMARY KEY (ID)
 );`

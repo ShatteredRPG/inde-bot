@@ -9,7 +9,7 @@ module.exports = {
         db.getNews(msg);
     },
     setphrase: function(msg, args) {
-
+        console.log(args);
         if(util.isAllowed(msg.member)) {
             // !setphrase add greet blah blah blah blah
             const author = msg.author;

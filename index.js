@@ -61,6 +61,9 @@ function cmdHandler(msg, cmd, args) {
     else if (cmd.toLowerCase() === 'setnews') {
         chat.setnews(msg, args);
     }
+    else if (cmd.toLowerCase() === 'setphrase') {
+        chat.setphrase(msg, args);
+    }
     else if (cmd.toLowerCase() === 'drink') {
         chat.drink(msg);
     }
@@ -71,10 +74,10 @@ function cmdHandler(msg, cmd, args) {
         chat.food(msg);
     }
     else if (cmd.toLowerCase() === 'setfood') {
-        chat.setfood(msg);
+        chat.setfood(msg, args);
     }
     else if (cmd.toLowerCase() === 'role') {
-        chat.addRole(msg, args);
+        //chat.addRole(msg, args);
     }
     else if (cmd.toLowerCase() === 'help') {
         chat.help(msg, prefix);

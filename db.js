@@ -1,16 +1,15 @@
-// require the sequelize module
-// const mysql = require('sync-mysql');
+// require the mysqljs module
+const mysql = require('mysql');
 
 // require the util code
 const util = require('./util.js');
 
 const { dbhost, dbport, dbname, dbuser, dbpass,
     dbconlimit, tblNews, tblGreet, tblIntro, tblOutro,
-    tblDrinks,tblFood, tblsRoles
+    tblDrink,tblFood, tblsRoles
     } = require('./config.json');
 
-const mysqljs = require('mysqljs');
-const pool = mysqljs.createPool({
+const pool = mysql.createPool({
     connectionLimit: dbconlimit,
     waitForConnections: true,
     host: dbhost,
@@ -40,34 +39,37 @@ module.exports = {
             let greet, intro, news, outro;
             con.query(selectQueryStr(tblGreet), function(err, results) {
                 greet = getRandResult(results)['greet'];
-            });
-            con.query(selectQueryStr(tblIntro), function(err, results) {
-                intro = getRandResult(results)['intro'];
-            });
-            con.query(selectQueryStr(tblNews), function(err, results) {
-                news = getRandResult(results)['newsDesc'];
-            });
-            con.query(selectQueryStr(tblOutro), function(err, results) {
-                outro = getRandResult(results)['outro'];
+            
+                con.query(selectQueryStr(tblIntro), function(err, results) {
+                    intro = getRandResult(results)['intro'];
+                    
+                    con.query(selectQueryStr(tblNews), function(err, results) {
+                        news = getRandResult(results)['newsDesc'];
+                    
+                        con.query(selectQueryStr(tblOutro), function(err, results) {
+                            outro = getRandResult(results)['outro'];
+                            msg.channel.send(`${greet} ${msg.author}, ${intro} ${news} ${outro}`);
+                        });
+                    });
+                });
             });
             con.release();
-            msg.channel.send(`${greet} ${msg.author}, ${intro} ${news} ${outro}`);
         });
     },
     // Allows adding phrases without phpMyAdmin
     phraseAdd: function(msg, tbl, item, phrase) {
         const errText = `Sorry, ${msg.author}, my pencil must be broken. I can't add **${item}** to my news right now.`;
         pool.getConnection(function(err, con) {
-            if (err.length > 0) {
+            if (err != null) {
                 errResponse(errText);
             }
             else {
                 con.query(`INSERT INTO ${tbl} (${item}) VALUES ('${phrase}')`, function(err, results) {
-                    if (err.length > 0 || results === false) {
+                    if (err != null || results === false) {
                         errResponse(errText);
                     }
                     else {
-                        msg.channel.send(`Thanks ${msg.author}, I've added ${item} to my news list.`);
+                        msg.channel.send(`Thanks ${msg.author}, I've added **${phrase}** to my **${item}** list.`);
                     }
                 });
             }
@@ -78,12 +80,12 @@ module.exports = {
     phraseRemove: function(msg, tbl, phraseType, phrase) {
         const errText = `Sorry, ${msg.author}, my eraser must be broken. I can't remove **${phrase}** from my **${phraseType}** phrases right now.`;
         pool.getConnection(function(err, con) {
-            if (err.length > 0) {
+            if (err != null) {
                 errResponse(errText);
             }
             else {
                 con.query(`DELETE FROM ${tbl} WHERE ID = '${phrase}'`, function(err, results) {
-                    if (err.length > 0 || results === false) {
+                    if (err != null || results === false) {
                         errResponse(errText);
                     }
                     else {
@@ -100,12 +102,12 @@ module.exports = {
         const itemCol = 'ID';
         let response = `This is what I have for ${descCol}, ${msg.author}: `;
         pool.getConnection(function(err, con) {
-            if (err.length > 0) {
+            if (err != null) {
                 errResponse(errText);
             }
             else {
                 con.query(selectQueryStr(tbl), function(err, results) {
-                    if (err.length > 0 || results === false) {
+                    if (err != null || results === false) {
                         errResponse(errText);
                     }
                     else {
@@ -123,12 +125,12 @@ module.exports = {
     newsAdd: function(msg, newsItem, newsDesc) {
         const errText = `Sorry, ${msg.author}, my pencil must be broken. I can't add **${newsItem}** to my news right now.`;
         pool.getConnection(function(err, con) {
-            if (err.length > 0) {
+            if (err != null) {
                 errResponse(errText);
             }
             else {
                 con.query(`INSERT INTO ${tblNews} (newsItem, newsDesc) VALUES ('${newsItem}', '${newsDesc}')`, function(err, results) {
-                    if (err.length > 0 || results === false) {
+                    if (err != null || results === false) {
                         errResponse(errText);
                     }
                     else {
@@ -143,12 +145,12 @@ module.exports = {
     newsRemove: function(msg, newsItem) {
         const errText = `Sorry, ${msg.author}, my eraser must be broken. I can't remove **${newsItem}** to my news right now.`;
         pool.getConnection(function(err, con) {
-            if (err.length > 0) {
+            if (err != null) {
                 errResponse(errText);
             }
             else {
                 con.query(`DELETE FROM ${tblNews} WHERE newsItem = '${newsItem}'`, function(err, results) {
-                    if (err.length > 0 || results === false) {
+                    if (err != null || results === false) {
                         errResponse(errText);
                     }
                     else {
@@ -166,12 +168,12 @@ module.exports = {
         const descCol = 'newsDesc';
         let response = `This is what I have for news articles, ${msg.author}: `;
         pool.getConnection(function(err, con) {
-            if (err.length > 0) {
+            if (err != null) {
                 errResponse(errText);
             }
             else {
                 con.query(selectQueryStr(tblNews), function(err, results) {
-                    if (err.length > 0 || results === false) {
+                    if (err != null || results === false) {
                         errResponse(errText);
                     }
                     else {
@@ -188,33 +190,34 @@ module.exports = {
     // returns a random drink
     getDrink: function(msg) {
         pool.getConnection(function(err, con) {
-            let greet, drinkItem, drinkDesc;
+            let greet, drink, drinkItem, drinkDesc;
             con.query(selectQueryStr(tblGreet), function(err, results) {
-                greet = getRandResult(results, 'greet');
-            });
-            con.query(selectQueryStr(tblIntro), function(err, results) {
-                let drink = getRandResult(results);
-                drinkItem = drink['drinkItem'];
-                drinkDesc = drink["drinkDesc"];
+                greet = getRandResult(results)['greet'];
+            
+                con.query(selectQueryStr(tblDrink), function(err, results) {
+                    drink = getRandResult(results);
+                    drinkItem = drink['drinkItem'];
+                    drinkDesc = drink["drinkDesc"];
+                    msg.channel.send(`${greet} ${msg.author}, I'll whip you up a ${drinkItem}. It's made with ${drinkDesc}.`);
+                });
             });
             con.release();
-            msg.channel.send(`${greet} ${msg.author}, I'll pour you a ${drinkItem}. It's made with ${drinkDesc}.`);
         });
     },
     // Allows adding drinks without phpMyAdmin
     drinkAdd: function(msg, drinkItem, drinkDesc) {
         const errText = `Sorry, ${msg.author}, I misplayced my drink list so I can't add **${drinkItem}** to it right now.`;
         pool.getConnection(function(err, con) {
-            if (err.length > 0) {
+            if (err != null) {
                 errResponse(errText);
             }
             else {
-                con.query(`INSERT INTO ${tblDrinks} (drinkItem, drinkDesc) VALUES ('${drinkItem}', '${drinkDesc}')`, function(err, results) {
-                    if (err.length > 0 || results === false) {
+                con.query(`INSERT INTO ${tblDrink} (drinkItem, drinkDesc) VALUES ('${drinkItem}', '${drinkDesc}')`, function(err, results) {
+                    if (err != null || results === false) {
                         errResponse(errText);
                     }
                     else {
-                        msg.channel.send(`Nice! I've added ${drinkItem} to my drink list, ${msg.author}.`);
+                        msg.channel.send(`Nice! I've added **${drinkItem}** to my drink list, ${msg.author}.`);
                     }
                 });
             }
@@ -222,15 +225,15 @@ module.exports = {
         });
     },
     // Allows removing drinks without phpMyAdmin
-    drinkRemove: function(msg, args) {
+    drinkRemove: function(msg, drinkItem) {
         const errText = `Yeah....no dice. My eraser went missing, ${msg.author}. Ask me later and I'll remove **${drinkItem}**.`;
         pool.getConnection(function(err, con) {
-            if (err.length > 0) {
+            if (err != null) {
                 errResponse(errText);
             }
             else {
-                con.query(`DELETE FROM ${tblDrinks} WHERE drinkItem = '${drinkItem}'`, function(err, results) {
-                    if (err.length > 0 || results === false) {
+                con.query(`DELETE FROM ${tblDrink} WHERE drinkItem = '${drinkItem}'`, function(err, results) {
+                    if (err != null || results === false) {
                         errResponse(errText);
                     }
                     else {
@@ -242,18 +245,18 @@ module.exports = {
         });
     },
     // Allows viewing the drink list without phpMyAdmin
-    drinkList: function(msg, args) {
+    drinkList: function(msg) {
         const errText = `Sorry, ${msg.author}, I can find my notepad right now, come back a bit later, ok?`;
         const itemCol = 'drinkItem';
         const descCol = 'drinkDesc';
         let response = `This is what I have for drinks, ${msg.author}: `;
         pool.getConnection(function(err, con) {
-            if (err.length > 0) {
+            if (err != null) {
                 errResponse(errText);
             }
             else {
-                con.query(selectQueryStr(tblDrinks), function(err, results) {
-                    if (err.length > 0 || results === false) {
+                con.query(selectQueryStr(tblDrink), function(err, results) {
+                    if (err != null || results === false) {
                         errResponse(errText);
                     }
                     else {
@@ -270,33 +273,34 @@ module.exports = {
     // returns a random food item
     getFood(msg) {
         pool.getConnection(function(err, con) {
-            let greet, drinkItem, drinkDesc;
+            let greet, food, foodItem, foodDesc;
             con.query(selectQueryStr(tblGreet), function(err, results) {
-                greet = getRandResult(results, 'greet');
-            });
-            con.query(selectQueryStr(tblIntro), function(err, results) {
-                let food = getRandResult(results);
-                foodItem = drink['drinkItem'];
-                foodDesc = drink["drinkDesc"];
+                greet = getRandResult(results)['greet'];
+            
+                con.query(selectQueryStr(tblFood), function(err, results) {
+                    food = getRandResult(results);
+                    foodItem = food['foodItem'];
+                    foodDesc = food["foodDesc"];
+                    msg.channel.send(`${greet} ${msg.author}, I'll whip you up a ${foodItem}. It's made with ${foodDesc}.`);
+                });
             });
             con.release();
-            msg.channel.send(`${greet} ${msg.author}, I'll whip you up a ${drinkItem}. It's made with ${drinkDesc}.`);
         });
     },
     // Allows adding food without phpMyAdmin
     foodAdd: function(msg, foodItem, foodDesc) {
         const errText = `Hmm...my food menu has been misplaced. Can you try again later, ${msg.author}? , I'll add **${foodItem}** to it then.`;
         pool.getConnection(function(err, con) {
-            if (err.length > 0) {
+            if (err != null) {
                 errResponse(errText);
             }
             else {
                 con.query(`INSERT INTO ${tblFood} (foodItem, foodDesc) VALUES ('${foodItem}', '${foodDesc}')`, function(err, results) {
-                    if (err.length > 0 || results === false) {
+                    if (err != null || results === false) {
                         errResponse(errText);
                     }
                     else {
-                        msg.channel.send(`Sounds tasty! I'll add ${foodItem} to my menu right now, ${msg.author}.`);
+                        msg.channel.send(`Sounds tasty! I'll add **${foodItem}** to my menu right now, ${msg.author}.`);
                     }
                 });
             }
@@ -307,12 +311,12 @@ module.exports = {
     foodRemove: function(msg, foodItem) {
         const errText = `Yeah, I can't remove ${foodItem} right now. Try again later, ${msg.author}.`;
         pool.getConnection(function(err, con) {
-            if (err.length > 0) {
+            if (err != null) {
                 errResponse(errText);
             }
             else {
                 con.query(`DELETE FROM ${tblFood} WHERE foodItem = '${foodItem}'`, function(err, results) {
-                    if (err.length > 0 || results === false) {
+                    if (err != null || results === false) {
                         errResponse(errText);
                     }
                     else {
@@ -324,18 +328,18 @@ module.exports = {
         });
     },
     // Allows viewing the food list without phpMyAdmin
-    foodList: function(msg, args) {
+    foodList: function(msg) {
         const errText = `Sorry, ${msg.author}, I can find my notepad right now, come back a bit later, ok?`;
         const itemCol = 'foodItem';
         const descCol = 'foodDesc';
         let response = `This is what I have for food recipes, ${msg.author}: `;
         pool.getConnection(function(err, con) {
-            if (err.length > 0) {
+            if (err != null) {
                 errResponse(errText);
             }
             else {
                 con.query(selectQueryStr(tblFood), function(err, results) {
-                    if (err.length > 0 || results === false) {
+                    if (err != null || results === false) {
                         errResponse(errText);
                     }
                     else {
@@ -351,13 +355,13 @@ module.exports = {
     },
     // Sets the roles based on the user's provided email; marks the email as in use
     setRoles: function(author, email) {
+        // INCOMPLETE
         const errText = `Sorry, ${msg.author}, I can find my notepad right now, ask one of the INDE Staff, please.`;
         pool.getConnection(function(err, con) {
             let inUse = false;
             let roleList = [];
-            if (err.length > 0) {
-                author.send()
-                errResponse(errText);
+            if (err != null) {
+                author.send(errText);
             }
             for (let i = 0; i < tblsRoles; i++) {
                 let tbl = tblsRoles[i];
@@ -371,7 +375,6 @@ module.exports = {
                         else
                         {
                             inUse = true;
-                            break;
                         }
                     }
                 }
