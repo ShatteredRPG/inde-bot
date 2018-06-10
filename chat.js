@@ -138,7 +138,7 @@ module.exports = {
     },
     // Replies with a list of all commands
     help: function (msg, prefix) {      
-        msg.channel.send(`OK ${msg.author}, here are my commands:
+        msg.author.send(`OK ${msg.author}, here are my commands:
                         \r\n**Commands:**
                         \r\n*${prefix}mds [rating]*
                         \r\n*${prefix}roll [dice]*
