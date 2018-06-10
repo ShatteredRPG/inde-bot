@@ -388,6 +388,6 @@ module.exports = {
             else {
                 author.send(`I'm sorry, ${author} you are not currently in our records. If you feel this is an error, please speak with the INDE staff.`);
             }
-        }
+        });
     },
 };

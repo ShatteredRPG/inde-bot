@@ -77,6 +77,6 @@ function cmdHandler(msg, cmd, args) {
         chat.addRole(msg, args);
     }
     else if (cmd.toLowerCase() === 'help') {
-        chat.help(msg);
+        chat.help(msg, prefix);
     }
 }

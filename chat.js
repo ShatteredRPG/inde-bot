@@ -56,6 +56,7 @@ module.exports = {
             msg.channel.send(`Sorry ${author}, you're not a trusted source of news here on Feneryss.`);
         }
     },
+    // allows members to ask for a drink
     drink: function (msg) {
         db.getDrink(msg);
     },
@@ -82,6 +83,7 @@ module.exports = {
             msg.channel.send(`Mmm no, that doesn't sound like a good drink recipe, ${author}. Find someone who has some better ideas.`);
         }
     },
+    // allows members to ask for food
     food: function (msg) {
         db.getFood(msg);
     },
@@ -114,6 +116,7 @@ module.exports = {
         db.setRoles(author, email);
         // not sure what to do here
     },
+    // Function for onjoin
     greet: function (guild, member, prefix) {
         guild.channels.get(welcomeChannel).send(
             `Hey; ${member}! Welcome to the official **INDE** Discord Server, home of **Shattered**, the Grimdark RPG. 
@@ -121,7 +124,20 @@ module.exports = {
                 *${prefix}role [EMAIL]*. If you're interested in purchasing our work, please check out our shop: 
                 http://shop.neverdarkenough.com/ . Enjoy your stay!`);
     },
-    help: function (msg) {
-        msg.channel.send("NOT YET IMPLEMENTED");
+    // Replies with a list of all commands
+    help: function (msg, prefix) {      
+        msg.channel.send(`OK ${msg.author}, here are my commands:
+                        \r\n**Commands:**
+                        \r\n*${prefix}mds [rating]*
+                        \r\n*${prefix}roll [dice]*
+                        \r\n*${prefix}r [dice]*
+                        \r\n*${prefix}news*
+                        \r\n*${prefix}drink*
+                        \r\n*${prefix}food*
+                        \r\n**Admin Commands**
+                        \r\n*${prefix}setnews [add/rem/list]*
+                        \r\n*${prefix}setphrase [add/rem/list]*
+                        \r\n*${prefix}setdrink [add/rem/list]*
+                        \r\n*${prefix}setfoods [add/rem/list]*`);
     }
 };
