@@ -9,12 +9,14 @@
     "dbconlmit": "10",
 
     "allowedGroups": [ "Admin" ],
+
+    "welcomeChannel": "general",
     
     "tblNews": "t_news",
     "tblGreet": "t_greet",
     "tblIntro": "t_intro",
     "tblOutro": "t_outro",
-    "tblDrinks": "t_drinks",
+    "tblDrink": "t_drink",
     "tblFood": "t_food",
     "tblsRoles": [ "t_roleTable" ]
 }
