@@ -27,10 +27,13 @@ module.exports = {
 
                 db.phraseList(msg, tbl, args[1]);
             }
-        else {
-            msg.channel.send(`NO can do ${author}, you're not a trusted wordsmith here on Feneryss.`);
+            else {
+                msg.channel.send(`I didn't understand that command. Please try again, ${author}`)
+            }
         }
-      }
+        else {
+            msg.channel.send(`No can do ${author}, you're not a trusted wordsmith here on Feneryss.`);
+        }
     },
     // adds, removes, and lists news artiles by name
     setnews: function(msg, args) {
@@ -48,8 +51,11 @@ module.exports = {
             else if (getSet.toLowerCase() === 'rem') {
                 db.newsRemove(msg, newsItem);
             }
-            if (getSet.toLowerCase() === 'list') {
+            else if (getSet.toLowerCase() === 'list') {
                 db.newsList(msg);
+            }
+            else {
+                msg.channel.send(`I didn't understand that command. Please try again, ${author}`)
             }
         }
         else {
@@ -75,8 +81,11 @@ module.exports = {
             else if (getSet.toLowerCase() === 'rem') {
                 db.drinkRemove(msg, drinkItem);
             }
-            if (getSet.toLowerCase() === 'list') {
+            else if (getSet.toLowerCase() === 'list') {
                 db.drinkList(msg);
+            }
+            else {
+                msg.channel.send(`I didn't understand that command. Please try again, ${author}`)
             }
         }
         else {
@@ -102,8 +111,11 @@ module.exports = {
             else if (getSet.toLowerCase() === 'rem') {
                 db.foodRemove(msg, foodItem);
             }
-            if (getSet.toLowerCase() === 'list') {
+            else if (getSet.toLowerCase() === 'list') {
                 db.foodList(msg);
+            }
+            else {
+                msg.channel.send(`I didn't understand that command. Please try again, ${author}`)
             }
         }
         else {
@@ -136,7 +148,7 @@ module.exports = {
                         \r\n*${prefix}food*
                         \r\n**Admin Commands**
                         \r\n*${prefix}setnews [add/rem/list]*
-                        \r\n*${prefix}setphrase [add/rem/list]*
+                        \r\n*${prefix}setphrase [add/rem/list] [greet/intro/outro]*
                         \r\n*${prefix}setdrink [add/rem/list]*
                         \r\n*${prefix}setfoods [add/rem/list]*`);
     }
