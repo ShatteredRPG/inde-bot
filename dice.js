@@ -1,3 +1,5 @@
+const diceEval = require('dice-expession-evaluator');
+
 module.exports = {
     mds: function(msg, args) {
             let modSign = '';
@@ -40,11 +42,10 @@ module.exports = {
             const d6r = rollMultiple(d6c, 1, 6);
             const d4r = rollMultiple(d4c, 1, 4);
 
-            // msg.channel.send(`${msg.author} rolled Rating **${rating}** (${d10c}d10+${d8c}d8+${d6c}d6+${d4c}d4${modSign}${mod}) = **${result}**`)
             msg.channel.send(concatRoll(msg.author, rating, d10r, d8r, d6r, d4r, modSign, mod));
     },
     dice: function(msg, args) {
-        msg.channel.send(`Not Yet Implemented: ${args}`);
+        //I honestly don't have the brainpower to do this        
     },
   };
 

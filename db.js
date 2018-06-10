@@ -369,7 +369,6 @@ module.exports = {
                     if (results.length > 0) {
                         if (results['inUse'] === author) {
                             let role = result['roleName'];
-                            author.setRoles(role);
                             roleList.push(role);
                         }
                         else
@@ -378,19 +377,21 @@ module.exports = {
                         }
                     }
                 }
-            }
-            con.release();
-
-            
+            }            
             if (inUse) {
                 author.send(`Hate to break it to you, ${author}, but your email is already in use by someone else.`)
             }
             else if (roleList.length > 0) {
+                for (let i = 0; i < roleList.length; i++) {
+                    // TODO: connect to DB and set "inUse" to username once we've made sure none of them are in use.
+                    author.setRoles(roleList[i]);
+                }
                 author.send(`Hey ${author}, thanks for your support! You've been added to the following role(s): ${roleList.join(', ')}`);
             }
             else {
                 author.send(`I'm sorry, ${author} you are not currently in our records. If you feel this is an error, please speak with the INDE staff.`);
             }
+            con.release();
         });
     },
 };

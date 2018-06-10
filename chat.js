@@ -136,13 +136,15 @@ module.exports = {
                 *${prefix}role [EMAIL]*. If you're interested in purchasing our work, please check out our shop: 
                 http://shop.neverdarkenough.com/ . Enjoy your stay!`);
     },
+    // function for onleave
+    goodbye: function(guild, member) {
+        guild.channels.get(welcomeChannel).send(`See ya later, ${member}. Hope you enjoyed your stay! The door is always open here at the Grey Shade. Unless of course one of the staff threw you out.`);
+    },
     // Replies with a list of all commands
-    help: function (msg, prefix) {      
+    help: function (msg, prefix) {
         msg.author.send(`OK ${msg.author}, here are my commands:
                         \r\n**Commands:**
                         \r\n*${prefix}mds [rating]*
-                        \r\n*${prefix}roll [dice]*
-                        \r\n*${prefix}r [dice]*
                         \r\n*${prefix}news*
                         \r\n*${prefix}drink*
                         \r\n*${prefix}food*
@@ -151,5 +153,8 @@ module.exports = {
                         \r\n*${prefix}setphrase [add/rem/list] [greet/intro/outro]*
                         \r\n*${prefix}setdrink [add/rem/list]*
                         \r\n*${prefix}setfoods [add/rem/list]*`);
+                        // Disabled for now
+                        // \r\n*${prefix}roll [dice]*
+                        // \r\n*${prefix}r [dice]*
     }
 };

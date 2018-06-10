@@ -24,6 +24,10 @@ client.on('guildMemberAdd', (guild, member) => {
     chat.greet(guild, member, prefix);
 });
 
+client.on('guildMemberRemove', (guild, member) => {
+    chat.goodbye(guild, member);
+});
+
 // message logic
 client.on('message', msg => {
     if (msg.author.bot) return;
@@ -53,7 +57,7 @@ function cmdHandler(msg, cmd, args) {
         dice.mds(msg, args);
     }
     else if (cmd.toLowerCase() === 'roll' || cmd.toLowerCase() === 'r') {
-        dice.dice(msg, args);
+        //dice.dice(msg, args);
     }
     else if (cmd.toLowerCase() === 'news') {
         chat.news(msg);
