@@ -382,9 +382,11 @@ module.exports = {
                 author.send(`Hate to break it to you, ${author}, but your email is already in use by someone else.`)
             }
             else if (roleList.length > 0) {
-                for (let i = 0; i < roleList.length; i++) {
-                    // TODO: connect to DB and set "inUse" to username once we've made sure none of them are in use.
+                for (let i = 0; i < roleList.length; i++) {   
                     author.setRoles(roleList[i]);
+                }
+                for (let i = 0; i < tblsRoles; i++) {
+                    con.query(`UPDATE ${tbl} SET inUse = '${author} WHERE email='${email}'`);
                 }
                 author.send(`Hey ${author}, thanks for your support! You've been added to the following role(s): ${roleList.join(', ')}`);
             }

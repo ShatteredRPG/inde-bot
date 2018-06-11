@@ -142,19 +142,24 @@ module.exports = {
     },
     // Replies with a list of all commands
     help: function (msg, prefix) {
-        msg.author.send(`OK ${msg.author}, here are my commands:
-                        \r\n**Commands:**
-                        \r\n*${prefix}mds [rating]*
-                        \r\n*${prefix}news*
-                        \r\n*${prefix}drink*
-                        \r\n*${prefix}food*
-                        \r\n**Admin Commands**
+        let msgStr = `OK ${msg.author}, here are my commands:
+        \r\n**Commands:**
+        \r\n*${prefix}mds [rating]*
+        \r\n*${prefix}news*
+        \r\n*${prefix}drink*
+        \r\n*${prefix}food*`;
+        // Disabled for now
+        // \r\n*${prefix}roll [dice]*
+        // \r\n*${prefix}r [dice]*
+
+        if(util.isAllowed(msg.member)) {
+            msgStr += `\r\n**Admin Commands**
                         \r\n*${prefix}setnews [add/rem/list]*
                         \r\n*${prefix}setphrase [add/rem/list] [greet/intro/outro]*
                         \r\n*${prefix}setdrink [add/rem/list]*
-                        \r\n*${prefix}setfoods [add/rem/list]*`);
-                        // Disabled for now
-                        // \r\n*${prefix}roll [dice]*
-                        // \r\n*${prefix}r [dice]*
+                        \r\n*${prefix}setfoods [add/rem/list]*`;
+                        
+        }
+        msg.author.send(msgStr);
     }
 };

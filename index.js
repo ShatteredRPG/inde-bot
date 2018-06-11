@@ -81,7 +81,7 @@ function cmdHandler(msg, cmd, args) {
         chat.setfood(msg, args);
     }
     else if (cmd.toLowerCase() === 'role') {
-        //chat.addRole(msg, args);
+        chat.addRole(msg, args);
     }
     else if (cmd.toLowerCase() === 'help') {
         chat.help(msg, prefix);
