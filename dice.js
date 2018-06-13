@@ -45,7 +45,7 @@ module.exports = {
             msg.channel.send(concatRoll(msg.author, rating, d10r, d8r, d6r, d4r, modSign, mod));
     },
     dice: function(msg, args) {
-        //I honestly don't have the brainpower to do this        
+        // I honestly don't have the brainpower to do this
     },
   };
 

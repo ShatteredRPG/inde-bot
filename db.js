@@ -6,7 +6,7 @@ const util = require('./util.js');
 
 const { dbhost, dbport, dbname, dbuser, dbpass,
     dbconlimit, tblNews, tblGreet, tblIntro, tblOutro,
-    tblDrink,tblFood, tblsRoles
+    tblDrink, tblFood, tblsRoles,
     } = require('./config.json');
 
 const pool = mysql.createPool({
@@ -39,15 +39,15 @@ module.exports = {
             let greet, intro, news, outro;
             con.query(selectQueryStr(tblGreet), function(err, results) {
                 greet = getRandResult(results)['greet'];
-            
-                con.query(selectQueryStr(tblIntro), function(err, results) {
-                    intro = getRandResult(results)['intro'];
-                    
-                    con.query(selectQueryStr(tblNews), function(err, results) {
-                        news = getRandResult(results)['newsDesc'];
-                    
-                        con.query(selectQueryStr(tblOutro), function(err, results) {
-                            outro = getRandResult(results)['outro'];
+
+                con.query(selectQueryStr(tblIntro), function(err, results1) {
+                    intro = getRandResult(results1)['intro'];
+
+                    con.query(selectQueryStr(tblNews), function(err, results2) {
+                        news = getRandResult(results2)['newsDesc'];
+
+                        con.query(selectQueryStr(tblOutro), function(err, results3) {
+                            outro = getRandResult(results3)['outro'];
                             msg.channel.send(`${greet} ${msg.author}, ${intro} ${news} ${outro}`);
                         });
                     });
@@ -193,11 +193,11 @@ module.exports = {
             let greet, drink, drinkItem, drinkDesc;
             con.query(selectQueryStr(tblGreet), function(err, results) {
                 greet = getRandResult(results)['greet'];
-            
-                con.query(selectQueryStr(tblDrink), function(err, results) {
-                    drink = getRandResult(results);
+
+                con.query(selectQueryStr(tblDrink), function(err, results1) {
+                    drink = getRandResult(results1);
                     drinkItem = drink['drinkItem'];
-                    drinkDesc = drink["drinkDesc"];
+                    drinkDesc = drink['drinkDesc'];
                     msg.channel.send(`${greet} ${msg.author}, I'll whip you up a ${drinkItem}. It's made with ${drinkDesc}.`);
                 });
             });
@@ -276,11 +276,11 @@ module.exports = {
             let greet, food, foodItem, foodDesc;
             con.query(selectQueryStr(tblGreet), function(err, results) {
                 greet = getRandResult(results)['greet'];
-            
-                con.query(selectQueryStr(tblFood), function(err, results) {
-                    food = getRandResult(results);
+
+                con.query(selectQueryStr(tblFood), function(err, results1) {
+                    food = getRandResult(results1);
                     foodItem = food['foodItem'];
-                    foodDesc = food["foodDesc"];
+                    foodDesc = food['foodDesc'];
                     msg.channel.send(`${greet} ${msg.author}, I'll whip you up a ${foodItem}. It's made with ${foodDesc}.`);
                 });
             });
@@ -356,37 +356,36 @@ module.exports = {
     // Sets the roles based on the user's provided email; marks the email as in use
     setRoles: function(author, email) {
         // INCOMPLETE
-        const errText = `Sorry, ${msg.author}, I can find my notepad right now, ask one of the INDE Staff, please.`;
+        const errText = `Sorry, ${author}, I can find my notepad right now, ask one of the INDE Staff, please.`;
         pool.getConnection(function(err, con) {
             let inUse = false;
-            let roleList = [];
+            const roleList = [];
             if (err != null) {
                 author.send(errText);
             }
             for (let i = 0; i < tblsRoles; i++) {
-                let tbl = tblsRoles[i];
-                con.query(`SELECT * FROM ${tbl} WHERE email=${email}`), function(err, results) {
+                const tbl = tblsRoles[i];
+                con.query(`SELECT * FROM ${tbl} WHERE email=${email}`, function(err, results) {
                     if (results.length > 0) {
                         if (results['inUse'] === author) {
-                            let role = result['roleName'];
+                            const role = results['roleName'];
                             roleList.push(role);
                         }
-                        else
-                        {
+                        else {
                             inUse = true;
                         }
                     }
-                }
-            }            
+                });
+            }
             if (inUse) {
-                author.send(`Hate to break it to you, ${author}, but your email is already in use by someone else.`)
+                author.send(`Hate to break it to you, ${author}, but your email is already in use by someone else.`);
             }
             else if (roleList.length > 0) {
-                for (let i = 0; i < roleList.length; i++) {   
+                for (let i = 0; i < roleList.length; i++) {
                     author.setRoles(roleList[i]);
                 }
                 for (let i = 0; i < tblsRoles; i++) {
-                    con.query(`UPDATE ${tbl} SET inUse = '${author} WHERE email='${email}'`);
+                    con.query(`UPDATE ${tblsRoles[i]} SET inUse = '${author}' WHERE email='${email}'`);
                 }
                 author.send(`Hey ${author}, thanks for your support! You've been added to the following role(s): ${roleList.join(', ')}`);
             }

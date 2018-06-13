@@ -57,7 +57,7 @@ function cmdHandler(msg, cmd, args) {
         dice.mds(msg, args);
     }
     else if (cmd.toLowerCase() === 'roll' || cmd.toLowerCase() === 'r') {
-        //dice.dice(msg, args);
+        // dice.dice(msg, args);
     }
     else if (cmd.toLowerCase() === 'news') {
         chat.news(msg);

@@ -12,7 +12,6 @@ module.exports = {
         console.log(args);
         if(util.isAllowed(msg.member)) {
             // !setphrase add greet blah blah blah blah
-            const author = msg.author;
             const getSet = args[0];
             const tbl = `t_${args[1]}`;
 
@@ -28,11 +27,11 @@ module.exports = {
                 db.phraseList(msg, tbl, args[1]);
             }
             else {
-                msg.channel.send(`I didn't understand that command. Please try again, ${author}`)
+                msg.channel.send(`I didn't understand that command. Please try again, ${msg.author}`);
             }
         }
         else {
-            msg.channel.send(`No can do ${author}, you're not a trusted wordsmith here on Feneryss.`);
+            msg.channel.send(`No can do ${msg.author}, you're not a trusted wordsmith here on Feneryss.`);
         }
     },
     // adds, removes, and lists news artiles by name
@@ -55,7 +54,7 @@ module.exports = {
                 db.newsList(msg);
             }
             else {
-                msg.channel.send(`I didn't understand that command. Please try again, ${author}`)
+                msg.channel.send(`I didn't understand that command. Please try again, ${author}`);
             }
         }
         else {
@@ -63,10 +62,10 @@ module.exports = {
         }
     },
     // allows members to ask for a drink
-    drink: function (msg) {
+    drink: function(msg) {
         db.getDrink(msg);
     },
-    setdrink: function (msg, args) {
+    setdrink: function(msg, args) {
         const author = msg.author;
         // if someone is in the trusted group, allow them to change the news
         if(util.isAllowed(msg.member)) {
@@ -85,7 +84,7 @@ module.exports = {
                 db.drinkList(msg);
             }
             else {
-                msg.channel.send(`I didn't understand that command. Please try again, ${author}`)
+                msg.channel.send(`I didn't understand that command. Please try again, ${author}`);
             }
         }
         else {
@@ -93,10 +92,10 @@ module.exports = {
         }
     },
     // allows members to ask for food
-    food: function (msg) {
+    food: function(msg) {
         db.getFood(msg);
     },
-    setfood: function (msg, args) {
+    setfood: function(msg, args) {
         const author = msg.author;
         // if someone is in the trusted group, allow them to change the news
         if(util.isAllowed(msg.member)) {
@@ -115,21 +114,21 @@ module.exports = {
                 db.foodList(msg);
             }
             else {
-                msg.channel.send(`I didn't understand that command. Please try again, ${author}`)
+                msg.channel.send(`I didn't understand that command. Please try again, ${author}`);
             }
         }
         else {
             msg.channel.send(`Ehhh no thanks. I'll find someone else for good meals, ${author}.`);
         }
     },
-    addRole: function (msg, args) {
-        let author = msg.author;
-        let email = args[0];
+    addRole: function(msg, args) {
+        const author = msg.author;
+        const email = args[0];
         db.setRoles(author, email);
         // not sure what to do here
     },
     // Function for onjoin
-    greet: function (guild, member, prefix) {
+    greet: function(guild, member, prefix) {
         guild.channels.get(welcomeChannel).send(
             `Hey; ${member}! Welcome to the official **INDE** Discord Server, home of **Shattered**, the Grimdark RPG. 
             If you are a Kickstarter or Backerkit backer, please PM me the following (*{EMAIL]* is the email you used): 
@@ -141,7 +140,7 @@ module.exports = {
         guild.channels.get(welcomeChannel).send(`See ya later, ${member}. Hope you enjoyed your stay! The door is always open here at the Grey Shade. Unless of course one of the staff threw you out.`);
     },
     // Replies with a list of all commands
-    help: function (msg, prefix) {
+    help: function(msg, prefix) {
         let msgStr = `OK ${msg.author}, here are my commands:
         \r\n**Commands:**
         \r\n*${prefix}mds [rating]*
@@ -158,8 +157,7 @@ module.exports = {
                         \r\n*${prefix}setphrase [add/rem/list] [greet/intro/outro]*
                         \r\n*${prefix}setdrink [add/rem/list]*
                         \r\n*${prefix}setfoods [add/rem/list]*`;
-                        
         }
         msg.author.send(msgStr);
-    }
+    },
 };

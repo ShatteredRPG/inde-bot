@@ -27,14 +27,14 @@ CREATE TABLE bot.t_news (
     newsDesc TEXT NOT NULL,
     PRIMARY KEY (ID)
 );
-CREATE TABLE bot.t_shatteredCore {
+CREATE TABLE bot.t_roleTable (
     ID INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(255),
     email VARCHAR(255),
     roleName VARCHAR(255),
+    inUse VARCHAR(255),
     PRIMARY KEY (ID)
 );
-
 CREATE TABLE bot.t_food (
     ID INT NOT NULL AUTO_INCREMENT,
     foodItem TEXT NOT NULL,
