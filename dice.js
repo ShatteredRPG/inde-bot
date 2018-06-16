@@ -1,5 +1,3 @@
-const diceEval = require('dice-expession-evaluator');
-
 module.exports = {
     mds: function(msg, args) {
             let modSign = '';

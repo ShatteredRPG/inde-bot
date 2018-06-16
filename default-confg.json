@@ -11,6 +11,7 @@
     "allowedGroups": [ "Admin" ],
 
     "welcomeChannel": "general",
+    "rolesChannel": "getroles",
     
     "tblNews": "t_news",
     "tblGreet": "t_greet",

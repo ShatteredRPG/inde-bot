@@ -1,17 +1,27 @@
 // require the mysqljs module
 const mysql = require('mysql');
 
+const syncMysql = require('sync-mysql');
+
 // require the util code
 const util = require('./util.js');
 
 const { dbhost, dbport, dbname, dbuser, dbpass,
     dbconlimit, tblNews, tblGreet, tblIntro, tblOutro,
-    tblDrink, tblFood, tblsRoles,
+    tblDrink, tblFood, tblsRoles, rolesChannel,
     } = require('./config.json');
 
 const pool = mysql.createPool({
     connectionLimit: dbconlimit,
     waitForConnections: true,
+    host: dbhost,
+    port: dbport,
+    user: dbuser,
+    database: dbname,
+    password: dbpass,
+});
+
+var syncCon = new syncMysql({
     host: dbhost,
     port: dbport,
     user: dbuser,
@@ -354,40 +364,50 @@ module.exports = {
         });
     },
     // Sets the roles based on the user's provided email; marks the email as in use
-    setRoles: function(author, email) {
-        // INCOMPLETE
+    setRoles: function(member, author, email) {
+        const userID = author.id;
         const errText = `Sorry, ${author}, I can find my notepad right now, ask one of the INDE Staff, please.`;
+        let roleList = [];
         pool.getConnection(function(err, con) {
             let inUse = false;
-            const roleList = [];
+            const rolesTbl = Object.values(tblsRoles);
             if (err != null) {
                 author.send(errText);
             }
-            for (let i = 0; i < tblsRoles; i++) {
-                const tbl = tblsRoles[i];
-                con.query(`SELECT * FROM ${tbl} WHERE email=${email}`, function(err, results) {
-                    if (results.length > 0) {
-                        if (results['inUse'] === author) {
-                            const role = results['roleName'];
-                            roleList.push(role);
-                        }
-                        else {
-                            inUse = true;
-                        }
+            for (let i = 0; i < rolesTbl.length; i++) {
+                const tbl = rolesTbl[i];
+
+                const results = syncCon.query(`SELECT * FROM ${tbl} WHERE email='${email}'`);
+                if (results.length > 0) {
+                    if (typeof results['inUse'] === 'undefined' || results['inUse'] === userID) {
+                        const role = results[0]['roleName'];
+                        roleList.push(role);
                     }
-                });
+                    else {
+                        inUse = true;
+                    }
+                }
             }
+            let isError = false;
             if (inUse) {
                 author.send(`Hate to break it to you, ${author}, but your email is already in use by someone else.`);
             }
             else if (roleList.length > 0) {
                 for (let i = 0; i < roleList.length; i++) {
-                    author.setRoles(roleList[i]);
+                    try {
+                        member.addRole(roleList[i]);
+                    }
+                    catch (err) {
+                        isError = true;
+                        author.send(`Please send your message in the #${rolesChannel} channel.`);
+                    }
                 }
-                for (let i = 0; i < tblsRoles; i++) {
-                    con.query(`UPDATE ${tblsRoles[i]} SET inUse = '${author}' WHERE email='${email}'`);
+                if (!isError) {
+                    for (let i = 0; i < roleList.length; i++) {
+                        con.query(`UPDATE ${tblsRoles[i]} SET inUse = '${userID}' WHERE email='${email}'`);
+                    }
+                    author.send(`Hey ${author}, thanks for your support! You've been added to the following role(s): ${roleList.join(', ')}`);
                 }
-                author.send(`Hey ${author}, thanks for your support! You've been added to the following role(s): ${roleList.join(', ')}`);
             }
             else {
                 author.send(`I'm sorry, ${author} you are not currently in our records. If you feel this is an error, please speak with the INDE staff.`);

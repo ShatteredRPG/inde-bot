@@ -1,7 +1,7 @@
 const db = require('./db.js');
 const util = require('./util.js');
 
-const { welcomeChannel } = require('./config.json');
+const { welcomeChannel, rolesChannel } = require('./config.json');
 
 module.exports = {
     // allows members to ask for a news article
@@ -124,15 +124,16 @@ module.exports = {
     addRole: function(msg, args) {
         const author = msg.author;
         const email = args[0];
-        db.setRoles(author, email);
+        const member = msg.member;
+        db.setRoles(member, author, email);
         // not sure what to do here
     },
     // Function for onjoin
     greet: function(guild, member, prefix) {
         guild.channels.get(welcomeChannel).send(
             `Hey; ${member}! Welcome to the official **INDE** Discord Server, home of **Shattered**, the Grimdark RPG. 
-            If you are a Kickstarter or Backerkit backer, please PM me the following (*{EMAIL]* is the email you used): 
-                *${prefix}role [EMAIL]*. If you're interested in purchasing our work, please check out our shop: 
+            If you are a Kickstarter or Backerkit backer, please type the following (*{EMAIL]* is the email you used): 
+                *${prefix}role [EMAIL]* into #${rolesChannel}. If you're interested in purchasing our work, please check out our shop: 
                 http://shop.neverdarkenough.com/ . Enjoy your stay!`);
     },
     // function for onleave
