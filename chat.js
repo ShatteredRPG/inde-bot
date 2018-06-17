@@ -126,7 +126,13 @@ module.exports = {
         const email = args[0];
         const member = msg.member;
         db.setRoles(member, author, email);
-        // not sure what to do here
+        try {
+            msg.delete();
+            msg.author.send(`Hey ${msg.author}, I removed your post so no one can see your email address.`);
+        }
+        catch (err) {
+            console.log(err);
+        }
     },
     // Function for onjoin
     greet: function(guild, member, prefix) {
