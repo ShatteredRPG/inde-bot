@@ -21,7 +21,7 @@ const pool = mysql.createPool({
     password: dbpass,
 });
 
-var syncCon = new syncMysql({
+let syncCon = new syncMysql({
     host: dbhost,
     port: dbport,
     user: dbuser,
@@ -364,15 +364,15 @@ module.exports = {
         });
     },
     // Sets the roles based on the user's provided email; marks the email as in use
-    setRoles: function(member, author, email, guild) {
-        const userID = author.id;
-        const errText = `Sorry, ${author}, I can find my notepad right now, ask one of the INDE Staff, please.`;
+    setRoles: function(member, email, guild) {
+        const userID = member.id;
+        const errText = `Sorry, ${member}, I can find my notepad right now, ask one of the INDE Staff, please.`;
         let roleList = [];
         pool.getConnection(function(err, con) {
             let inUse = false;
             const rolesTbl = Object.values(tblsRoles);
             if (err != null) {
-                author.send(errText);
+                member.send(errText);
             }
             for (let i = 0; i < rolesTbl.length; i++) {
                 const tbl = rolesTbl[i];
@@ -390,12 +390,12 @@ module.exports = {
             }
             let isError = false;
             if (inUse) {
-                author.send(`Hate to break it to you, ${author}, but your email is already in use by someone else.`);
+                member.send(`Hate to break it to you, ${member}, but your email is already in use by someone else.`);
             }
             else if (roleList.length > 0) {
                 for (let i = 0; i < roleList.length; i++) {
                     try {
-                        const role = guild.roles.find("name", roleList[i]);
+                        const role = guild.roles.find('name', roleList[i]);
                         member.addRole(role);
                     }
                     catch (err) {
@@ -407,11 +407,11 @@ module.exports = {
                     for (let i = 0; i < roleList.length; i++) {
                         con.query(`UPDATE ${tblsRoles[i]} SET inUse = '${userID}' WHERE email='${email}'`);
                     }
-                    author.send(`Hey ${author}, thanks for your support! You've been added to the following role(s): ${roleList.join(', ')}`);
+                    member.send(`Hey ${member}, thanks for your support! You've been added to the following role(s): ${roleList.join(', ')}`);
                 }
             }
             else {
-                author.send(`I'm sorry, ${author} you are not currently in our records. If you feel this is an error, please speak with the INDE staff.`);
+                member.send(`I'm sorry, ${member} you are not currently in our records. If you feel this is an error, please speak with the INDE staff.`);
             }
             con.release();
         });

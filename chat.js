@@ -121,11 +121,11 @@ module.exports = {
             msg.channel.send(`Ehhh no thanks. I'll find someone else for good meals, ${author}.`);
         }
     },
-    addRole: function(msg, args, guild) {        
+    addRole: function(msg, args, guild) {
         const author = msg.author;
         const email = args[0];
         const member = guild.members.get(author.id);
-        db.setRoles(member, author, email, guild);
+        db.setRoles(member, email, guild);
     },
     // Function for onjoin
     greet: function(guild, member, prefix) {
