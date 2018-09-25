@@ -7,7 +7,7 @@ const chat = require('./chat.js');
 // creates a discord client
 const client = new Discord.Client();
 // sets config vars
-const { prefix, token } = require('./config.json');
+const { prefix, token, guildID } = require('./config.json');
 
 
 // const Cmds = require('./cmd.js');
@@ -81,7 +81,8 @@ function cmdHandler(msg, cmd, args) {
         chat.setfood(msg, args);
     }
     else if (cmd.toLowerCase() === 'role') {
-        chat.addRole(msg, args);
+        const guild = client.guilds.get(guildID);
+        chat.addRole(msg, args, guild);
     }
     else if (cmd.toLowerCase() === 'help') {
         chat.help(msg, prefix);

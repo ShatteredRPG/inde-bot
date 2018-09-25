@@ -7,8 +7,8 @@ const syncMysql = require('sync-mysql');
 const util = require('./util.js');
 
 const { dbhost, dbport, dbname, dbuser, dbpass,
-    dbconlimit, tblNews, tblGreet, tblIntro, tblOutro,
-    tblDrink, tblFood, tblsRoles, rolesChannel,
+    dbconlimit, tblNews, tblGreet, tblIntro,
+    tblOutro, tblDrink, tblFood, tblsRoles,
     } = require('./config.json');
 
 const pool = mysql.createPool({
@@ -364,7 +364,7 @@ module.exports = {
         });
     },
     // Sets the roles based on the user's provided email; marks the email as in use
-    setRoles: function(member, author, email) {
+    setRoles: function(member, author, email, guild) {
         const userID = author.id;
         const errText = `Sorry, ${author}, I can find my notepad right now, ask one of the INDE Staff, please.`;
         let roleList = [];
@@ -395,11 +395,12 @@ module.exports = {
             else if (roleList.length > 0) {
                 for (let i = 0; i < roleList.length; i++) {
                     try {
-                        member.addRole(roleList[i]);
+                        const role = guild.roles.find("name", roleList[i]);
+                        member.addRole(role);
                     }
                     catch (err) {
                         isError = true;
-                        author.send(`Please send your message in the #${rolesChannel} channel.`);
+                        console.log(err);
                     }
                 }
                 if (!isError) {

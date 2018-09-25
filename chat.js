@@ -1,7 +1,7 @@
 const db = require('./db.js');
 const util = require('./util.js');
 
-const { welcomeChannel, rolesChannel } = require('./config.json');
+const { welcomeChannel } = require('./config.json');
 
 module.exports = {
     // allows members to ask for a news article
@@ -121,18 +121,11 @@ module.exports = {
             msg.channel.send(`Ehhh no thanks. I'll find someone else for good meals, ${author}.`);
         }
     },
-    addRole: function(msg, args) {
+    addRole: function(msg, args, guild) {        
         const author = msg.author;
         const email = args[0];
-        const member = msg.member;
-        db.setRoles(member, author, email);
-        try {
-            msg.delete();
-            msg.author.send(`Hey ${msg.author}, I removed your post so no one can see your email address.`);
-        }
-        catch (err) {
-            console.log(err);
-        }
+        const member = guild.members.get(author.id);
+        db.setRoles(member, author, email, guild);
     },
     // Function for onjoin
     greet: function(guild, member, prefix) {

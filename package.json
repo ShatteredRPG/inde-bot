@@ -25,9 +25,9 @@
   },
   "homepage": "https://github.com/ShatteredRPG/inde-bot#readme",
   "dependencies": {
-    "discord.js": "^11.3.2",
+    "discord.js": "^11.4.2",
     "jsonfile": "^4.0.0",
-    "mysql": "^2.15.0",
+    "mysql": "^2.16.0",
     "mysqljs": "0.0.2-security",
     "sync-mysql": "^3.0.1"
   }
